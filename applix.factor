@@ -7,7 +7,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
 IN: applix
 
 
-TUPLE: rom reset array start ;
+TUPLE: rom reset array start error ;
 
 : rom-start ( rom -- rom start )
     [  start>> ] keep swap ;
@@ -22,6 +22,9 @@ TUPLE: rom reset array start ;
     rom-start
     [ rom-size ] dip + ;
 
+: rom-error ( rom -- )
+    t >>error
+
 M: rom model-changed
     break
     ! see if data is true to write false to read
@@ -33,9 +36,17 @@ M: rom model-changed
     [
         ! read mode
         swap [ memory-address ] dip swap
-        [ rom-start ] dip swap
         [ rom-end ] dip swap
-        [ between? ] dip
+        [ rom-start ] 2dip [ swap ] dip
+        between?
+        [
+            ! ok we got somthing
+            
+        ]
+        [
+            ! oh no error lets clean up and leave
+            
+        ] if
         
     ] if 
     . . . ;
@@ -46,7 +57,7 @@ M: rom model-changed
     >>start  ! save start address
     swap >>array ! save the array
     f >>reset ! reset latch for rom mirror
-
+    f >>error
 ;
 
 ! lets make the program start here

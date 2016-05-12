@@ -22,8 +22,9 @@ TUPLE: rom reset array start error ;
     rom-start
     [ rom-size ] dip + ;
 
-: rom-error ( rom -- )
-    t >>error
+: rom-error ( rom -- rom )
+    t >>error ;
+
 
 M: rom model-changed
     break
@@ -32,6 +33,9 @@ M: rom model-changed
     [
         ! write mode t
         [ reset>> ] keep swap
+        drop
+        drop
+        drop
     ]
     [
         ! read mode
@@ -47,9 +51,10 @@ M: rom model-changed
             ! oh no error lets clean up and leave
             
         ] if
-        
+        drop
+        drop
     ] if 
-    . . . ;
+ ;
 
 
 : <rom> ( array start -- rom )

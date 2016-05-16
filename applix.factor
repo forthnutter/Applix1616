@@ -1,11 +1,10 @@
 !
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
-      prettyprint sequences
+      prettyprint sequences freescale.68000.emulator
       ;
 
 IN: applix
-
 
 TUPLE: rom reset array start error ;
 
@@ -57,7 +56,7 @@ M: rom model-changed
  ;
 
 
-: <rom> ( array start -- rom )
+: <rom> ( array start -- rom-read )
     rom new swap
     >>start  ! save start address
     swap >>array ! save the array
@@ -67,7 +66,8 @@ M: rom model-changed
 
 ! lets make the program start here
 : applix ( -- cpu )
-  "work/applix/A1616OSV045.bin" <binfile> 0 <rom> <memory> ;
+    <cpu>
+    "work/applix/A1616OSV045.bin" <binfile> 0 <rom> memory-add ;
 
 
 !  0 swap <mblock> <cpu> [ memory>> memory-add-block ] keep ;

@@ -8,50 +8,43 @@ IN: applix
 
 TUPLE: rom reset array start error ;
 
-: rom-start ( rom -- rom start )
-    [  start>> ] keep swap ;
+: rom-start ( rom -- start )
+    start>> ;
 
-: rom-array ( rom -- rom array )
-    [ array>> ] keep swap ;
+: rom-array ( rom -- array )
+    array>> ;
 
-: rom-size ( rom -- rom size )
+: rom-size ( rom -- size )
     rom-array length ;
 
-: rom-end ( rom -- rom end )
-    rom-start
-    [ rom-size ] dip + ;
+: rom-end ( rom -- end )
+    [ rom-start ] keep
+    rom-size + ;
 
 : rom-error ( rom -- rom )
     t >>error ;
 
+! test the address is within rom start and end address
+: rom-between ( address rom -- ? )
+    [ rom-start ] [ rom-end ] bi between? ;
+
+    
+: rom-read ( address rom -- data )
+    2 dup rom-between
+    [ ] [ ] if
+    
+    drop
+    ;
 
 M: rom model-changed
     break
     ! see if data is true to write false to read
     swap ?memory-data
     [
-        ! write mode t
-        [ reset>> ] keep swap
-        drop
-        drop
-        drop
+        rom-write
     ]
     [
-        ! read mode
-        swap [ memory-address ] dip swap
-        [ rom-end ] dip swap
-        [ rom-start ] 2dip [ swap ] dip
-        between?
-        [
-            ! ok we got somthing
-            
-        ]
-        [
-            ! oh no error lets clean up and leave
-            
-        ] if
-        drop
-        drop
+        rom-read
     ] if 
  ;
 

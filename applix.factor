@@ -36,16 +36,20 @@ TUPLE: rom reset array start error ;
     drop
     ;
 
+: rom-write ( d address rom -- )
+    drop drop drop ;
+
 M: rom model-changed
     break
     ! see if data is true to write false to read
     swap ?memory-data
     [
-        rom-write
+       ! 0 0  rom-write
     ]
     [
-        rom-read
+       ! rom-read
     ] if 
+    drop drop
  ;
 
 

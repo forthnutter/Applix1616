@@ -1,10 +1,13 @@
 !
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
-      prettyprint sequences freescale.68000.emulator
+      prettyprint sequences freescale.68000.emulator byte-arrays
+      applix.ram namespaces
       ;
 
 IN: applix
+
+SYMBOL: saveram
 
 TUPLE: rom reset array start error ;
 
@@ -36,20 +39,24 @@ TUPLE: rom reset array start error ;
     drop
     ;
 
-: rom-write ( d address rom -- )
-    drop drop drop ;
 
 M: rom model-changed
     break
     ! see if data is true to write false to read
     swap ?memory-data
     [
-       ! 0 0  rom-write
+        [ dup reset>> ] dip swap
+        [
+            saveram get swap [ remove-connection ] keep
+            0x30000 <byte-array> 0 <ram> memory-add drop
+            drop
+        ]
+        [ drop drop ] if
     ]
     [
+        drop drop
        ! rom-read
     ] if 
-    drop drop
  ;
 
 
@@ -57,14 +64,15 @@ M: rom model-changed
     rom new swap
     >>start  ! save start address
     swap >>array ! save the array
-    f >>reset ! reset latch for rom mirror
+    t >>reset ! reset latch for rom mirror
     f >>error
 ;
 
 ! lets make the program start here
 : applix ( -- cpu )
     <cpu>
-    "work/applix/A1616OSV045.bin" <binfile> 0 <rom> memory-add ;
+    "work/applix/A1616OSV045.bin" <binfile>
+    [ 0 <ram> dup saveram set memory-add ] [ 0x500000 <rom> memory-add ] bi ;
 
 
 !  0 swap <mblock> <cpu> [ memory>> memory-add-block ] keep ;

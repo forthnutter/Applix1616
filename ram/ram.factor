@@ -36,20 +36,6 @@ TUPLE: ram array start error ;
     ;
 
 
-M: ram model-changed
-    break
-    ! see if data is true to write false to read
-    swap ?memory-data
-    [
- 
-    ]
-    [
-        drop drop
-       ! rom-read
-    ] if 
- ;
-
-
 : <ram> ( array start -- ram )
     ram new swap
     >>start  ! save start address

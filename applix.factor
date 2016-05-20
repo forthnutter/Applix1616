@@ -47,11 +47,28 @@ M: rom model-changed
     [
         [ dup reset>> ] dip swap
         [
+            [ f >>reset ] dip ! reset function complete
             saveram get swap [ remove-connection ] keep
             0x30000 <byte-array> 0 <ram> memory-add drop
             drop
         ]
         [ drop drop ] if
+    ]
+    [
+        drop drop
+       ! rom-read
+    ] if 
+ ;
+
+
+
+
+M: ram model-changed
+    break
+    ! see if data is true to write false to read
+    swap ?memory-data
+    [
+        drop drop
     ]
     [
         drop drop

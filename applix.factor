@@ -85,6 +85,10 @@ M: ram model-changed
     f >>error
 ;
 
+: applix-reset ( cpu -- )
+    drop ;
+
+
 ! lets make the program start here
 : applix ( -- cpu )
     <cpu>

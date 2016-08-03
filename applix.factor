@@ -42,9 +42,12 @@ TUPLE: rom reset array start error ;
 
 M: rom model-changed
     break
+    
+    
     ! see if data is true to write false to read
     swap ?memory-data
     [
+        ! write to memory
         [ dup reset>> ] dip swap
         [
             [ f >>reset ] dip ! reset function complete
@@ -64,16 +67,21 @@ M: rom model-changed
 
 
 M: ram model-changed
-    break
-    ! see if data is true to write false to read
-    swap ?memory-data
+    [ memory-address ] dip ! get the focus address
+    [ ram-between ] keep swap
     [
-        drop drop
-    ]
-    [
-        drop drop
-       ! rom-read
-    ] if 
+        ! see if data is true to write false to read
+        swap ?memory-data
+        [
+            
+        ]
+        [
+            swap [ memory-address ] dip
+            ram-read
+            ! rom-read
+        ] if 
+    ] when
+    drop drop 
  ;
 
 

@@ -32,56 +32,71 @@ TUPLE: rom reset array start error ;
     [ rom-start ] [ rom-end ] bi between? ;
 
     
-: rom-read ( address rom -- data )
-    2 dup rom-between
-    [ ] [ ] if
-    
-    drop
-    ;
+: rom-read ( n address rom -- data )
+    [ rom-between ] 2keep
+    rot
+    [
+        [ swap ] dip [ dup + ] 2dip
+        array>> subseq
+    ]
+    [ drop drop drop f ] if ;
+
 
 
 M: rom model-changed
     break
     
-    
-    ! see if data is true to write false to read
-    swap ?memory-data
+    [ memory-address ] dip ! go get that address
+    [ rom-between ] keep swap
     [
-        ! write to memory
-        [ dup reset>> ] dip swap
+        ! see if data is true to write false to read
+        swap ?memory-data
         [
-            [ f >>reset ] dip ! reset function complete
-            saveram get swap [ remove-connection ] keep
-            0x30000 <byte-array> 0 <ram> memory-add drop
-            drop
+            ! write to memory
+            ! [ dup reset>> ] dip swap
+            ! [
+            !    [ f >>reset ] dip ! reset function complete
+            !    saveram get swap [ remove-connection ] keep
+            !    0x30000 <byte-array> 0 <ram> memory-add drop
+            !    drop
+            ! ]
+            ! [ drop drop ] if
+            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            rom-read
+            drop drop
         ]
-        [ drop drop ] if
+        [
+            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            rom-read >>data drop
+        ] if 
     ]
-    [
-        drop drop
-       ! rom-read
-    ] if 
+    [ drop drop ] if
  ;
 
 
 
 
 M: ram model-changed
+    break
+
     [ memory-address ] dip ! get the focus address
     [ ram-between ] keep swap
     [
         ! see if data is true to write false to read
         swap ?memory-data
         [
-            
+            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            ram-read ! >>data
+            drop drop
         ]
         [
-            swap [ memory-address ] dip
-            ram-read
-            ! rom-read
-        ] if 
-    ] when
-    drop drop 
+            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            ram-read >>data drop
+        ] if
+    ]
+    [
+        drop drop
+    ] if
  ;
 
 
@@ -101,7 +116,7 @@ M: ram model-changed
 : applix ( -- cpu )
     <cpu>
     "work/applix/A1616OSV045.bin" <binfile>
-    [ 0 <ram> dup saveram set memory-add ] [ 0x500000 <rom> memory-add ] bi ;
+    0 <rom> memory-add ;
 
 
 !  0 swap <mblock> <cpu> [ memory>> memory-add-block ] keep ;

@@ -27,21 +27,16 @@ TUPLE: ram array start error ;
 : ram-between ( address ram -- ? )
     [ ram-start ] [ ram-end ] bi between? ;
 
-    
-: ram-read ( address ram -- data )
-    break
+
+! read number of bytes at address from ram    
+: ram-read ( n address ram -- data )
     [ ram-between ] 2keep
+    rot
     [
-        rot
-        [
-            array>> ?nth          
-        ]
-        [ ] if
-        drop
-    ] keep
-    
-    drop
-    ;
+        [ swap ] dip [ dup + ] 2dip
+        array>> subseq
+    ]
+    [ drop drop drop f ] if ;
 
 
 : <ram> ( array start -- ram )

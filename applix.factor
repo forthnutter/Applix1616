@@ -45,25 +45,24 @@ TUPLE: rom reset array start error ;
 
 M: rom model-changed
     break
-    
     [ memory-address ] dip ! go get that address
     [ rom-between ] keep swap
     [
         ! see if data is true to write false to read
         swap ?memory-data
         [
+            break
             ! write to memory
-            ! [ dup reset>> ] dip swap
-            ! [
-            !    [ f >>reset ] dip ! reset function complete
-            !    saveram get swap [ remove-connection ] keep
-            !    0x30000 <byte-array> 0 <ram> memory-add drop
-            !    drop
-            ! ]
-            ! [ drop drop ] if
-            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
-            rom-read
-            drop drop
+            [ dup reset>> ] dip swap
+            [
+                [ f >>reset ] dip ! reset function complete
+                [ 0x50000 >>start drop ] dip ! change rom address
+                t >>data  ! if was ok 
+                0x30000 <byte-array> 0 <ram> memory-add drop
+            ]
+            [
+                drop drop
+            ] if
         ]
         [
             swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
@@ -82,6 +81,7 @@ M: ram model-changed
     [ memory-address ] dip ! get the focus address
     [ ram-between ] keep swap
     [
+        break
         ! see if data is true to write false to read
         swap ?memory-data
         [

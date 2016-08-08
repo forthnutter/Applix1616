@@ -9,6 +9,8 @@ IN: applix
 
 SYMBOL: saveram
 
+TUPLE: applix cpu ;
+
 TUPLE: rom reset array start error ;
 
 : rom-start ( rom -- start )

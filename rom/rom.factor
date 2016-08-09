@@ -34,7 +34,7 @@ TUPLE: rom reset array start error ;
     [ rom-between ] 2keep
     rot
     [
-        [ swap ] dip [ dup + ] 2dip
+        [ dup [ + ] dip swap ] dip
         array>> subseq
     ]
     [ drop drop drop f ] if ;

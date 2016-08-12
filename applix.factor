@@ -21,10 +21,7 @@ TUPLE: applix cpu ;
 ! lets make the program start here
 : applix ( -- cpu )
     <cpu>
-    "work/applix/A1616OSV045.bin" <binfile>
-    0 <rom> memory-add ;
-
-
-!  0 swap <mblock> <cpu> [ memory>> memory-add-block ] keep ;
+    "work/applix/A1616OSV045.bin" <binfile> dup
+    [ 0 <rom> memory-add ] dip 0x500000 <rom> memory-add ;
 
 

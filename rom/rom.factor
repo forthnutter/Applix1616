@@ -30,11 +30,16 @@ TUPLE: rom reset array start error ;
     [ rom-start ] [ rom-end ] bi between? ;
 
     
+: rom-index ( address rom -- index )
+    rom-start - ;
+    
 : rom-read ( n address rom -- data )
     [ rom-between ] 2keep
     rot
     [
         [ dup [ + ] dip swap ] dip
+        ! here we need to zero base the address to do indexing
+        [ [ drop ] dip rom-index ] 2keep [ rom-index ] keep
         array>> subseq
     ]
     [ drop drop drop f ] if ;
@@ -42,7 +47,6 @@ TUPLE: rom reset array start error ;
 
 
 M: rom model-changed
-    break
     [ memory-address ] dip ! go get that address
     [ rom-between ] keep swap
     [

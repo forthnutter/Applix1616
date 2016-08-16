@@ -1,3 +1,5 @@
+! Copyright (C) 2016 Joseph Moschini.  a.k.a. forthnutter
+! See http://factorcode.org/license.txt for BSD license.
 !
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory

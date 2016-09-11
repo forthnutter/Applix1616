@@ -21,7 +21,9 @@ TUPLE: applix < clock cpu ;
     [ 0 <rom> memory-add ] dip 0x500000 <rom> memory-add >>cpu ;
     
 
-
+! just return the cpu so we can work with that
+: applix-cpu ( applix -- cpu )
+    cpu>> ;
 
 
 

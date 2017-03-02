@@ -30,6 +30,11 @@ TUPLE: applix < clock cpu ;
 : applix-reset ( cpu -- )
     drop ;
 
+    
+! execute single instruction
+: applix-single ( applix -- applix' )
+    [ cpu>> execute-cycle ] keep ;
+    
 
 ! lets make the program start here
 : applix1616 ( -- cpu )

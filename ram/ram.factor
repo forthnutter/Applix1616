@@ -28,7 +28,7 @@ TUPLE: ram array start error ;
     [ ram-start ] [ ram-end ] bi between? ;
 
 
-! read number of bytes at address from ram    
+! read number of bytes at address from ram
 : ram-read ( n address ram -- data )
     [ ram-between ] 2keep
     rot
@@ -40,21 +40,18 @@ TUPLE: ram array start error ;
 
 
 M: ram model-changed
-    break
-
     [ memory-address ] dip ! get the focus address
     [ ram-between ] keep swap
     [
-        break
         ! see if data is true to write false to read
-        swap ?memory-data
+        [ ?memory-data ] dip swap
         [
-            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            [ memory-address ] dip [ memory-nbytes ] 2dip
             ram-read ! >>data
             drop drop
         ]
         [
-            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
+            [ memory-address ] dip [ memory-nbytes ] 2dip
             ram-read >>data drop
         ] if
     ]

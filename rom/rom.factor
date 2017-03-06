@@ -31,10 +31,10 @@ TUPLE: rom reset array start error ;
 : rom-between ( address rom -- ? )
     [ rom-start ] [ rom-end ] bi between? ;
 
-    
+
 : rom-index ( address rom -- index )
     rom-start - ;
-    
+
 : rom-read ( n address rom -- data )
     [ rom-between ] 2keep
     rot
@@ -49,31 +49,46 @@ TUPLE: rom reset array start error ;
 
 
 M: rom model-changed
-    [ memory-address ] dip ! go get that address
+  [ reset>> ] keep swap
+  [
+    ! see if data is true to write false to read
+    [ ?memory-data ] dip swap
+    [
+      ! write to memory
+      f >>reset          ! reset function complete
+      [ t >>data ] dip
+      [ 0x30000 <byte-array> 0 <ram> memory-add ] dip
+      drop drop
+    ]
+    [
+      [ memory-address ] dip
+      [ rom-between ] keep swap
+      [
+        [ memory-address ] dip [ memory-nbytes ] 2dip
+        rom-read >>data drop
+      ]
+      [
+        [ memory-address ] dip [ memory-nbytes ] 2dip
+        [ start>> + ] keep rom-read >>data drop
+      ] if
+    ] if
+  ]
+  [
+    [ memory-address ] dip  ! go get that address
     [ rom-between ] keep swap
     [
-        ! see if data is true to write false to read
-        swap ?memory-data
-        [
-            break
-            ! write to memory
-            [ dup reset>> ] dip swap
-            [
-                [ f >>reset ] dip ! reset function complete
-                [ 0x50000 >>start drop ] dip ! change rom address
-                t >>data  ! if was ok 
-                0x30000 <byte-array> 0 <ram> memory-add drop
-            ]
-            [
-                drop drop
-            ] if
-        ]
-        [
-            swap [ memory-nbytes ] dip [ swap memory-address [ swap ] dip ] dip
-            rom-read >>data drop
-        ] if 
+      ! test if memory data
+      [ ?memory-data ] dip swap
+      [
+        [ t >>data ] dip drop drop
+      ]
+      [
+        [ memory-address ] dip [ memory-nbytes ] 2dip
+        rom-read >>data drop
+      ] if
     ]
     [ drop drop ] if
+  ] if
  ;
 
 
@@ -85,6 +100,3 @@ M: rom model-changed
     t >>reset ! reset latch for rom mirror
     f >>error
 ;
-
-
-

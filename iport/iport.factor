@@ -11,37 +11,37 @@ IN: applix.iport
 
 TUPLE: iport reset array start error ;
 
-: iport-start ( rom -- start )
+: iport-start ( iport -- start )
     start>> ;
 
-: iport-array ( rom -- array )
+: iport-array ( iport -- array )
     array>> ;
 
-: iport-size ( rom -- size )
-    rom-array length ;
+: iport-size ( iport -- size )
+    iport-array length ;
 
-: iport-end ( rom -- end )
-    [ rom-start ] keep
-    rom-size + ;
+: iport-end ( iport -- end )
+    [ iport-start ] keep
+    iport-size + ;
 
-: iport-error ( rom -- rom )
+: iport-error ( iport -- rom )
     t >>error ;
 
 ! test the address is within rom start and end address
 : iport-between ( address rom -- ? )
-    [ rom-start ] [ rom-end ] bi between? ;
+    [ iport-start ] [ iport-end ] bi between? ;
 
 
 : iport-index ( address rom -- index )
-    rom-start - ;
+    iport-start - ;
 
 : iport-read ( n address rom -- data )
-    [ rom-between ] 2keep
+    [ iport-between ] 2keep
     rot
     [
         [ dup [ + ] dip swap ] dip
         ! here we need to zero base the address to do indexing
-        [ [ drop ] dip rom-index ] 2keep [ rom-index ] keep
+        [ [ drop ] dip iport-index ] 2keep [ iport-index ] keep
         array>> subseq
     ]
     [ drop drop drop f ] if ;
@@ -62,20 +62,20 @@ M: iport model-changed
     ]
     [
       [ memory-address ] dip
-      [ rom-between ] keep swap
+      [ iport-between ] keep swap
       [
         [ memory-address ] dip [ memory-nbytes ] 2dip
-        rom-read >>data drop
+        iport-read >>data drop
       ]
       [
         [ memory-address ] dip [ memory-nbytes ] 2dip
-        [ start>> + ] keep rom-read >>data drop
+        [ start>> + ] keep iport-read >>data drop
       ] if
     ] if
   ]
   [
     [ memory-address ] dip  ! go get that address
-    [ rom-between ] keep swap
+    [ iport-between ] keep swap
     [
       ! test if memory data
       [ ?memory-data ] dip swap
@@ -84,7 +84,7 @@ M: iport model-changed
       ]
       [
         [ memory-address ] dip [ memory-nbytes ] 2dip
-        rom-read >>data drop
+        iport-read >>data drop
       ] if
     ]
     [ drop drop ] if

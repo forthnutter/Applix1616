@@ -5,7 +5,7 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory models.clock
       prettyprint sequences freescale.68000 freescale.68000.emulator byte-arrays
-      applix.iport applix.ram applix.rom namespaces ;
+      applix.iport applix.ram applix.rom namespaces io ;
 
 IN: applix
 
@@ -25,6 +25,11 @@ TUPLE: applix < clock cpu ;
 : applix-reset ( cpu -- )
     drop ;
 
+! display current registers
+: x ( applix -- applix' )
+  [ cpu>> string-DX [ print ] each ] keep
+  [ cpu>> string-AX [ print ] each ] keep ;
+
 ! execute single instruction
-: applix-single ( applix -- applix' )
+: s ( applix -- applix' )
     [ cpu>> execute-cycle ] keep ;

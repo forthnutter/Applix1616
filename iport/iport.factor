@@ -49,47 +49,47 @@ TUPLE: iport reset array start error ;
 
 
 M: iport model-changed
-  [ reset>> ] keep swap
+  break
+  [ err>> ] keep swap
   [
-    ! see if data is true to write false to read
-    [ ?memory-data ] dip swap
+    [ reset>> ] keep swap
     [
-      ! write to memory
-      f >>reset          ! reset function complete
-      [ t >>data ] dip
-      [ 0x30000 <byte-array> 0 <ram> memory-add ] dip
-      drop drop
-    ]
-    [
-      [ memory-address ] dip
-      [ iport-between ] keep swap
-      [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        iport-read >>data drop
-      ]
-      [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        [ start>> + ] keep iport-read >>data drop
-      ] if
-    ] if
-  ]
-  [
-    [ memory-address ] dip  ! go get that address
-    [ iport-between ] keep swap
-    [
-      ! test if memory data
+      ! see if data is true to write false to read
       [ ?memory-data ] dip swap
       [
-        [ t >>data ] dip drop drop
+        drop drop
+        ]
+        [
+          [ memory-address ] dip
+          [ iport-between ] keep swap
+          [
+            [ memory-address ] dip [ memory-nbytes ] 2dip
+            iport-read >>data drop
+          ]
+          [
+            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ start>> + ] keep iport-read >>data drop
+          ] if
+        ] if
       ]
       [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        iport-read >>data drop
+        [ memory-address ] dip  ! go get that address
+        [ iport-between ] keep swap
+        [
+          ! test if memory data
+          [ ?memory-data ] dip swap
+            [
+              [ t >>data ] dip drop drop
+            ]
+          [
+            [ memory-address ] dip [ memory-nbytes ] 2dip
+            iport-read >>data drop
+          ] if
+        ]
+        [ drop drop ] if
       ] if
     ]
-    [ drop drop ] if
-  ] if
- ;
+    [ drop drop ] if ;
 
 
 

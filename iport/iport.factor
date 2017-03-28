@@ -60,20 +60,20 @@ M: iport model-changed
         drop drop
         ]
         [
-          [ memory-address ] dip
+          [ dup memory-address ] dip
           [ iport-between ] keep swap
           [
-            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             iport-read >>data drop
           ]
           [
-            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             [ start>> + ] keep iport-read >>data drop
           ] if
         ] if
       ]
       [
-        [ memory-address ] dip  ! go get that address
+        [ dup memory-address ] dip  ! go get that address
         [ iport-between ] keep swap
         [
           ! test if memory data
@@ -82,7 +82,7 @@ M: iport model-changed
               [ t >>data ] dip drop drop
             ]
           [
-            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             iport-read >>data drop
           ] if
         ]

@@ -47,7 +47,7 @@ TUPLE: rom reset array start error ;
     [ drop drop drop f ] if ;
 
 : rom-reset-mode ( cpu rom -- )
-  [ ?memory-data ] dip swap
+  [ memory-write? ] dip swap
   [
     ! write to memory
     f >>reset   ! rom does not need reset anymore
@@ -56,15 +56,17 @@ TUPLE: rom reset array start error ;
     drop drop
   ]
   [
-    [ memory-address ] dip
+    [ dup memory-address ] dip
     [ rom-between ] keep swap
     [
-      [ memory-address ] dip [ memory-nbytes ] 2dip
-      rom-read >>data f >>err drop
+      [ dup memory-nbytes-address ] dip
+      ! [ memory-address ] dip [ memory-nbytes ] 2dip
+      rom-read >>data memory-ok
     ]
     [
-      [ memory-address ] dip [ memory-nbytes ] 2dip
-      [ start>> + ] keep rom-read >>data f >>err drop
+      [ dup memory-nbytes-address ] dip
+      ! [ memory-address ] dip [ memory-nbytes ] 2dip
+      [ start>> + ] keep rom-read >>data memory-ok
     ] if
   ] if ;
 
@@ -75,17 +77,15 @@ M: rom model-changed
     [ reset>> ] keep swap
     [ rom-reset-mode ]
     [
-      [ memory-address ] dip  ! go get that address
+      [ dup memory-address ] dip  ! go get that address
       [ rom-between ] keep swap
       [
         ! test if memory data
-        [ ?memory-data ] dip swap
+        [ memory-write? ] dip swap
+        [ drop t >>data memory-ok ]  ! write does nothing
         [
-          [ t >>data ] dip drop drop
-          ]
-        [
-          [ memory-address ] dip [ memory-nbytes ] 2dip
-          rom-read >>data drop
+          [ dup memory-nbytes-address ] dip
+          rom-read >>data memory-ok
         ] if
       ]
       [ drop drop ] if

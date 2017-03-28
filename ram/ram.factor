@@ -40,18 +40,18 @@ TUPLE: ram array start error ;
 
 
 M: ram model-changed
-    [ memory-address ] dip ! get the focus address
+    [ dup memory-address ] dip ! get the focus address
     [ ram-between ] keep swap
     [
         ! see if data is true to write false to read
         [ ?memory-data ] dip swap
         [
-            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             ram-read ! >>data
             drop drop
         ]
         [
-            [ memory-address ] dip [ memory-nbytes ] 2dip
+            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             ram-read >>data drop
         ] if
     ]

@@ -46,51 +46,52 @@ TUPLE: rom reset array start error ;
     ]
     [ drop drop drop f ] if ;
 
-
+: rom-reset-mode ( cpu rom -- )
+  [ ?memory-data ] dip swap
+  [
+    ! write to memory
+    f >>reset   ! rom does not need reset anymore
+    [ t >>data ] dip
+    [ 0x30000 <byte-array> 0 <ram> memory-add ] dip
+    drop drop
+  ]
+  [
+    [ memory-address ] dip
+    [ rom-between ] keep swap
+    [
+      [ memory-address ] dip [ memory-nbytes ] 2dip
+      rom-read >>data f >>err drop
+    ]
+    [
+      [ memory-address ] dip [ memory-nbytes ] 2dip
+      [ start>> + ] keep rom-read >>data f >>err drop
+    ] if
+  ] if ;
 
 M: rom model-changed
   break
-  [ reset>> ] keep swap
+  [ dup err>> ] dip swap
   [
-    ! see if data is true to write false to read
-    [ ?memory-data ] dip swap
+    [ reset>> ] keep swap
+    [ rom-reset-mode ]
     [
-      ! write to memory
-      f >>reset          ! reset function complete
-      [ t >>data ] dip
-      [ 0x30000 <byte-array> 0 <ram> memory-add ] dip
-      drop drop
-    ]
-    [
-      [ memory-address ] dip
+      [ memory-address ] dip  ! go get that address
       [ rom-between ] keep swap
       [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        rom-read >>data f >>err drop
+        ! test if memory data
+        [ ?memory-data ] dip swap
+        [
+          [ t >>data ] dip drop drop
+          ]
+        [
+          [ memory-address ] dip [ memory-nbytes ] 2dip
+          rom-read >>data drop
+        ] if
       ]
-      [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        [ start>> + ] keep rom-read >>data f >>err drop
-      ] if
+      [ drop drop ] if
     ] if
   ]
-  [
-    [ memory-address ] dip  ! go get that address
-    [ rom-between ] keep swap
-    [
-      ! test if memory data
-      [ ?memory-data ] dip swap
-      [
-        [ t >>data ] dip drop drop
-      ]
-      [
-        [ memory-address ] dip [ memory-nbytes ] 2dip
-        rom-read >>data drop
-      ] if
-    ]
-    [ drop drop ] if
-  ] if
- ;
+  [ drop drop ] if ;
 
 
 

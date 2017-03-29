@@ -55,7 +55,7 @@ M: iport model-changed
     [ reset>> ] keep swap
     [
       ! see if data is true to write false to read
-      [ ?memory-data ] dip swap
+      [ memory-write? ] dip swap
       [
         drop drop
         ]
@@ -77,7 +77,7 @@ M: iport model-changed
         [ iport-between ] keep swap
         [
           ! test if memory data
-          [ ?memory-data ] dip swap
+          [ memory-write? ] dip swap
             [
               [ t >>data ] dip drop drop
             ]

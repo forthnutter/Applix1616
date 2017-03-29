@@ -44,7 +44,7 @@ M: ram model-changed
     [ ram-between ] keep swap
     [
         ! see if data is true to write false to read
-        [ ?memory-data ] dip swap
+        [ memory-write? ] dip swap
         [
             [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
             ram-read ! >>data

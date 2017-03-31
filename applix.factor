@@ -20,17 +20,18 @@ TUPLE: applix < clock mc68k ;
     0 1byte-array 0x700081 <iport> memory-add drop ;
 
 ! just return the cpu so we can work with that
-: applix-cpu ( applix -- cpu )
-    cpu>> ;
+: applix-68000 ( applix -- mc68k )
+    mc68k>> ;
 
 : applix-reset ( cpu -- )
     drop ;
 
 ! display current registers
 : x ( applix -- applix' )
-  [ cpu>> string-DX [ print ] each ] keep
-  [ cpu>> string-AX [ print ] each ] keep ;
+  [ mc68k>> string-DX [ print ] each ] keep
+  [ mc68k>> string-AX [ print ] each ] keep
+  [ applix-68000 string-PC print ] keep ;
 
 ! execute single instruction
 : s ( applix -- applix' )
-    [ cpu>> execute-cycle ] keep ;
+    [ mc68k>> single-step ] keep ;

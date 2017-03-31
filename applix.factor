@@ -4,19 +4,20 @@
 
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory models.clock
-      prettyprint sequences freescale.68000 freescale.68000.emulator byte-arrays
-      applix.iport applix.ram applix.rom namespaces io ;
+      prettyprint sequences freescale.68000.emulator byte-arrays
+      applix.iport applix.ram applix.rom namespaces io freescale.68000 ;
 
 IN: applix
 
-TUPLE: applix < clock cpu ;
+TUPLE: applix < clock mc68k ;
 
 : <applix> ( -- applix )
     applix new-clock  ! applix has clock model
     ! now add 68000 CPU with ROM data
-    <cpu> "work/applix/A1616OSV045.bin" <binfile>
+    <mc68k> >>mc68k dup mc68k>> mc68k-emu
+    "work/applix/A1616OSV045.bin" <binfile>
     0x500000 <rom> memory-add
-    0 1byte-array 0x700081 <iport> memory-add >>cpu ;
+    0 1byte-array 0x700081 <iport> memory-add drop ;
 
 ! just return the cpu so we can work with that
 : applix-cpu ( applix -- cpu )

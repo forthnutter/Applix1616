@@ -3,7 +3,7 @@
 !
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
-      prettyprint sequences freescale.68000 freescale.68000.emulator byte-arrays
+      prettyprint sequences freescale.68000.emulator byte-arrays
       applix.ram namespaces
       ;
 

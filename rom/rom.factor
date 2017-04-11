@@ -71,7 +71,6 @@ TUPLE: rom reset array start error ;
   ] if ;
 
 M: rom model-changed
-  break
   [ dup err>> ] dip swap
   [
     [ reset>> ] keep swap

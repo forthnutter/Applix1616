@@ -49,7 +49,6 @@ TUPLE: iport reset array start error ;
 
 
 M: iport model-changed
-  break
   [ dup err>> ] dip swap   ! if err is false a memory has been read
   [
     [ reset>> ] keep swap

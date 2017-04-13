@@ -35,3 +35,6 @@ TUPLE: applix < clock mc68k ;
 ! execute single instruction
 : s ( applix -- applix' )
     [ mc68k>> single-step ] keep ;
+
+: sx ( applix -- applix' )
+  [ s drop ] [ x ] bi ;

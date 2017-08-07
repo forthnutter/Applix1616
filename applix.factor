@@ -11,6 +11,11 @@ IN: applix
 
 TUPLE: applix < clock mc68k ;
 
+
+M: cpu read-byte
+  break [ dup 23 20 bit-range ] dip drop drop drop ;
+
+
 : <applix> ( -- applix )
     applix new-clock  ! applix has clock model
     ! now add 68000 CPU with ROM data

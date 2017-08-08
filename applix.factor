@@ -5,12 +5,27 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory models.clock
       prettyprint sequences freescale.68000.emulator byte-arrays
-      applix.iport applix.ram applix.rom namespaces io freescale.68000 ;
+      applix.iport applix.ram applix.rom applix.port applix.vpa namespaces
+      io freescale.68000 combinators ;
 
 IN: applix
 
 TUPLE: applix < clock mc68k ;
 
+
+: applix-decode ( address -- quotation )
+  23 20 bit-range
+  {
+    { [ 0 = ] [ \ ram ] }
+    { [ 1 = ] [ \ ram ] }
+    { [ 2 = ] [ \ ram ] }
+    { [ 3 = ] [ \ ram ] }
+    { [ 4 = ] [ \ ram ] }
+    { [ 5 = ] [ \ rom ] }
+    { [ 6 = ] [ \ port ] }
+    { [ 7 = ] [ \ vpa ] }
+!    { [ \ rom ] }
+  } cond ;
 
 M: cpu read-byte
   break [ dup 23 20 bit-range ] dip drop drop drop ;

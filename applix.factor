@@ -16,15 +16,15 @@ TUPLE: applix < clock mc68k ;
 : applix-decode ( address -- quotation )
   23 20 bit-range
   {
-    { [ 0 = ] [ \ ram ] }
-    { [ 1 = ] [ \ ram ] }
-    { [ 2 = ] [ \ ram ] }
-    { [ 3 = ] [ \ ram ] }
-    { [ 4 = ] [ \ ram ] }
-    { [ 5 = ] [ \ rom ] }
-    { [ 6 = ] [ \ port ] }
-    { [ 7 = ] [ \ vpa ] }
-!    { [ \ rom ] }
+    { [ dup 0 = ] [ drop \ ram ] }
+    { [ dup 1 = ] [ drop \ ram ] }
+    { [ dup 2 = ] [ drop \ ram ] }
+    { [ dup 3 = ] [ drop \ ram ] }
+    { [ dup 4 = ] [ drop \ ram ] }
+    { [ dup 5 = ] [ drop \ rom ] }
+    { [ dup 6 = ] [ drop \ port ] }
+    { [ dup 7 = ] [ drop \ vpa ] }
+    [ drop \ rom ]
   } cond ;
 
 M: cpu read-byte

@@ -6,11 +6,11 @@ USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory models.clock
       prettyprint sequences freescale.68000.emulator byte-arrays
       applix.iport applix.ram applix.rom applix.port applix.vpa namespaces
-      io freescale.68000 combinators ;
+      io freescale.68000 combinators ascii words quotations arrays ;
 
 IN: applix
 
-TUPLE: applix < clock mc68k ;
+TUPLE: applix < clock mc68k memap ;
 
 
 : applix-decode ( address -- quotation )
@@ -27,12 +27,32 @@ TUPLE: applix < clock mc68k ;
     [ drop \ rom ]
   } cond ;
 
+
+
+: mem-bad ( -- )
+  ;
+
+
+! generate the memory map here
+: applix-memory ( applix -- array )
+    memap>>
+    [
+          [ drop ] dip
+          [
+              >hex >upper
+              "(memory-" swap append ")" append
+              "applix" lookup-word 1quotation
+          ] keep
+          [ swap ] dip swap [ memap>> set-nth ] keep
+    ] each-index drop ;
+
 M: cpu read-byte
   break [ dup 23 20 bit-range ] dip drop drop drop ;
 
 
 : <applix> ( -- applix )
     applix new-clock  ! applix has clock model
+    16 [ mem-bad ] <array> >>memap
     ! now add 68000 CPU with ROM data
     <mc68k> >>mc68k dup mc68k>>
     "work/applix/A1616OSV045.bin" <binfile>

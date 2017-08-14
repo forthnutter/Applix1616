@@ -10,7 +10,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix
 
-TUPLE: applix < clock mc68k memap ;
+TUPLE: applix < clock mc68k rom ram memap ;
 
 
 : applix-decode ( address -- quotation )
@@ -32,10 +32,58 @@ TUPLE: applix < clock mc68k memap ;
 : mem-bad ( -- )
   ;
 
+: (memory-0) ( -- )
+  ;
+
+: (memory-1) ( -- )
+  ;
+
+: (memory-2) ( -- )
+  ;
+
+: (memory-3) ( -- )
+  ;
+
+: (memory-4) ( -- )
+  ;
+
+: (memory-5) ( -- )
+  ;
+
+: (memory-6) ( -- )
+  ;
+
+: (memory-7) ( -- )
+  ;
+
+: (memory-8) ( -- )
+  ;
+
+: (memory-9) ( -- )
+  ;
+
+: (memory-A) ( -- )
+  ;
+
+: (memory-B) ( -- )
+  ;
+
+: (memory-C) ( -- )
+  ;
+
+: (memory-D) ( -- )
+  ;
+
+: (memory-E) ( -- )
+  ;
+
+: (memory-F) ( -- )
+  ;
+
 
 ! generate the memory map here
 : applix-memory ( applix -- array )
-    memap>>
+    memap>> dup
     [
           [ drop ] dip
           [
@@ -43,8 +91,8 @@ TUPLE: applix < clock mc68k memap ;
               "(memory-" swap append ")" append
               "applix" lookup-word 1quotation
           ] keep
-          [ swap ] dip swap [ memap>> set-nth ] keep
-    ] each-index drop ;
+          [ swap ] dip swap [ set-nth ] keep
+    ] each-index ;
 
 M: cpu read-byte
   break [ dup 23 20 bit-range ] dip drop drop drop ;
@@ -52,12 +100,15 @@ M: cpu read-byte
 
 : <applix> ( -- applix )
     applix new-clock  ! applix has clock model
+    ! memap is memory decoder
     16 [ mem-bad ] <array> >>memap
-    ! now add 68000 CPU with ROM data
-    <mc68k> >>mc68k dup mc68k>>
+    [ applix-memory ] keep swap >>memap
+    ! now add 68000 CPU
+    <mc68k> >>mc68k
+    ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
-    0x500000 <rom> memory-add
-    0 1byte-array 0x700081 <iport> memory-add drop ;
+    <rom> >>rom ;
+    ! 0 1byte-array 0x700081 <iport> memory-add drop ;
 
 ! just return the cpu so we can work with that
 : applix-68000 ( applix -- mc68k )

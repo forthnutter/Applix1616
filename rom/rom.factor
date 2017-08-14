@@ -94,10 +94,8 @@ M: rom model-changed
 
 
 
-: <rom> ( array start -- rom-read )
-    rom new swap
-    >>start  ! save start address
+: <rom> ( array -- rom )
+    rom new
     swap >>array ! save the array
     t >>reset ! reset latch for rom mirror
-    f >>error
-;
+    ;

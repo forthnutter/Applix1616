@@ -13,22 +13,6 @@ IN: applix
 TUPLE: applix < clock mc68k rom ram memap ;
 
 
-: applix-decode ( address -- quotation )
-  23 20 bit-range
-  {
-    { [ dup 0 = ] [ drop \ ram ] }
-    { [ dup 1 = ] [ drop \ ram ] }
-    { [ dup 2 = ] [ drop \ ram ] }
-    { [ dup 3 = ] [ drop \ ram ] }
-    { [ dup 4 = ] [ drop \ ram ] }
-    { [ dup 5 = ] [ drop \ rom ] }
-    { [ dup 6 = ] [ drop \ port ] }
-    { [ dup 7 = ] [ drop \ vpa ] }
-    [ drop \ rom ]
-  } cond ;
-
-
-
 : mem-bad ( -- )
   ;
 
@@ -94,7 +78,7 @@ TUPLE: applix < clock mc68k rom ram memap ;
           [ swap ] dip swap [ set-nth ] keep
     ] each-index ;
 
-M: cpu read-byte
+M: cpu read-bytes
   break [ dup 23 20 bit-range ] dip drop drop drop ;
 
 

@@ -10,7 +10,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix
 
-TUPLE: applix < clock mc68k rom ram memap ;
+TUPLE: applix < cpu rom ram memap ;
 
 
 : mem-bad ( -- )
@@ -79,16 +79,16 @@ TUPLE: applix < clock mc68k rom ram memap ;
     ] each-index ;
 
 M: cpu read-bytes
-  break [ dup 23 20 bit-range ] dip drop drop drop ;
+  break [ dup 23 20 bit-range ] dip [ memap>> ]  drop drop drop ;
 
 
 : <applix> ( -- applix )
-    applix new-clock  ! applix has clock model
+    applix new-cpu ! create the tuple for applix
     ! memap is memory decoder
     16 [ mem-bad ] <array> >>memap
     [ applix-memory ] keep swap >>memap
     ! now add 68000 CPU
-    <mc68k> >>mc68k
+    ! <mc68k> >>mc68k
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom ;
@@ -109,7 +109,7 @@ M: cpu read-bytes
 
 ! execute single instruction
 : s ( applix -- applix' )
-    [ mc68k>> single-step ] keep ;
+    [ single-step ] keep ;
 
 : sx ( applix -- applix' )
   [ s drop ] [ x ] bi ;

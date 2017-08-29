@@ -6,75 +6,77 @@ USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models prettyprint
       sequences freescale.68000.emulator byte-arrays
       applix.iport applix.ram applix.rom applix.port applix.vpa namespaces
-      io freescale.68000 combinators ascii words quotations arrays ;
+      io freescale.68000 freescale.68000.disassembler combinators
+      ascii words quotations arrays ;
 
 IN: applix
 
-TUPLE: applix < cpu rom ram readmap writemap reset ;
+TUPLE: applix < cpu rom ram readmap writemap boot mnemo ;
 
 : mem-bad ( -- )
   ;
 
-: (memory-0) ( n address applix -- seq )
-  dup reset>>
-  [ drop drop drop { 0 } ]
-  [ drop drop drop { 1 } ] if
+: (read-0) ( n address applix -- seq )
+  break dup boot>>
+  [ rom>> rom-read ]
+  [ ram>> ram-read ] if
   ;
 
-: (memory-1) ( -- )
+: (read-1) ( -- )
   ;
 
-: (memory-2) ( -- )
+: (read-2) ( -- )
   ;
 
-: (memory-3) ( -- )
+: (read-3) ( -- )
   ;
 
-: (memory-4) ( -- )
+: (read-4) ( -- )
   ;
 
-: (memory-5) ( -- )
+: (read-5) ( n address applix -- seq )
+  rom>> rom-read
   ;
 
-: (memory-6) ( -- )
+: (read-6) ( -- )
   ;
 
-: (memory-7) ( -- )
+: (read-7) ( -- )
   ;
 
-: (memory-8) ( -- )
+: (read-8) ( -- )
   ;
 
-: (memory-9) ( -- )
+: (read-9) ( -- )
   ;
 
-: (memory-A) ( -- )
+: (read-A) ( -- )
   ;
 
-: (memory-B) ( -- )
+: (read-B) ( -- )
   ;
 
-: (memory-C) ( -- )
+: (read-C) ( -- )
   ;
 
-: (memory-D) ( -- )
+: (read-D) ( -- )
   ;
 
-: (memory-E) ( -- )
+: (read-E) ( -- )
   ;
 
-: (memory-F) ( -- )
+: (read-F) ( -- )
   ;
 
 
 ! generate the memory map here
 : applix-readmap ( applix -- array )
-    memap>> dup
+    readmap>> dup
     [
           [ drop ] dip
           [
               >hex >upper
-              "(memory-" swap append ")" append
+              "(read-" swap append ")" append
               "applix" lookup-word 1quotation
           ] keep
           [ swap ] dip swap [ set-nth ] keep
@@ -82,21 +84,46 @@ TUPLE: applix < cpu rom ram readmap writemap reset ;
 
 M: applix read-bytes
   [ [ 19 0 bit-range ] [ 23 20 bit-range ] bi ] dip
-  [ memap>> nth ] keep swap
+  [ readmap>> nth ] keep swap
   call( n address applix -- seq ) ;
+
+
+
+! generate the memory map here
+: applix-writemap ( applix -- array )
+    writemap>> dup
+    [
+          [ drop ] dip
+          [
+              >hex >upper
+              "(write-" swap append ")" append
+              "applix" lookup-word 1quotation
+          ] keep
+          [ swap ] dip swap [ set-nth ] keep
+    ] each-index ;
+
+M: applix write-bytes
+  [ [ 19 0 bit-range ] [ 23 20 bit-range ] bi ] dip
+  [ writemap>> nth ] keep swap
+  call( seq address applix -- ) ;
+
 
 
 : <applix> ( -- applix )
     applix new-cpu ! create the tuple for applix
     ! memap is memory decoder
-    16 [ mem-bad ] <array> >>memap
-    [ applix-memory ] keep swap >>memap
+    16 [ mem-bad ] <array> >>readmap
+    [ applix-readmap ] keep swap >>readmap
+    16 [ mem-bad ] <array> >>writemap
+    t >>boot    ! boot flag is used to indicate hard reset
     ! now add 68000 CPU
-    ! <mc68k> >>mc68k
+    <disassembler> >>mnemo
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
-    <rom> >>rom ;
-    ! 0 1byte-array 0x700081 <iport> memory-add drop ;
+    <rom> >>rom
+    512 <byte-array> >>ram
+    ! 0 1byte-array 0x700081 <iport> memory-add drop
+    ;
 
 
 : applix-reset ( cpu -- )

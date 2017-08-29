@@ -3,20 +3,22 @@
 !
 
 USING: accessors kernel math math.bitwise math.order math.parser
-      freescale.binfile tools.continuations models models.memory models.clock
-      prettyprint sequences freescale.68000.emulator byte-arrays
+      freescale.binfile tools.continuations models prettyprint
+      sequences freescale.68000.emulator byte-arrays
       applix.iport applix.ram applix.rom applix.port applix.vpa namespaces
       io freescale.68000 combinators ascii words quotations arrays ;
 
 IN: applix
 
-TUPLE: applix < cpu rom ram memap ;
-
+TUPLE: applix < cpu rom ram readmap writemap reset ;
 
 : mem-bad ( -- )
   ;
 
-: (memory-0) ( -- )
+: (memory-0) ( n address applix -- seq )
+  dup reset>>
+  [ drop drop drop { 0 } ]
+  [ drop drop drop { 1 } ] if
   ;
 
 : (memory-1) ( -- )
@@ -66,7 +68,7 @@ TUPLE: applix < cpu rom ram memap ;
 
 
 ! generate the memory map here
-: applix-memory ( applix -- array )
+: applix-readmap ( applix -- array )
     memap>> dup
     [
           [ drop ] dip
@@ -78,8 +80,10 @@ TUPLE: applix < cpu rom ram memap ;
           [ swap ] dip swap [ set-nth ] keep
     ] each-index ;
 
-M: cpu read-bytes
-  break [ dup 23 20 bit-range ] dip [ memap>> ]  drop drop drop ;
+M: applix read-bytes
+  [ [ 19 0 bit-range ] [ 23 20 bit-range ] bi ] dip
+  [ memap>> nth ] keep swap
+  call( n address applix -- seq ) ;
 
 
 : <applix> ( -- applix )
@@ -94,18 +98,15 @@ M: cpu read-bytes
     <rom> >>rom ;
     ! 0 1byte-array 0x700081 <iport> memory-add drop ;
 
-! just return the cpu so we can work with that
-: applix-68000 ( applix -- mc68k )
-    mc68k>> ;
 
 : applix-reset ( cpu -- )
     drop ;
 
 ! display current registers
 : x ( applix -- applix' )
-  [ mc68k>> string-DX [ print ] each ] keep
-  [ mc68k>> string-AX [ print ] each ] keep
-  [ applix-68000 string-PC print ] keep ;
+  [ string-DX [ print ] each ] keep
+  [ string-AX [ print ] each ] keep
+  [ string-PC print ] keep ;
 
 ! execute single instruction
 : s ( applix -- applix' )

@@ -11,62 +11,60 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix
 
-TUPLE: applix < cpu rom ram readmap writemap boot mnemo ;
+TUPLE: applix < cpu rom ram readmap writemap boot ;
 
 : mem-bad ( -- )
   ;
 
 : (read-0) ( n address applix -- seq )
-  break dup boot>>
+  dup boot>>
   [ rom>> rom-read ]
-  [ ram>> ram-read ] if
-  ;
+  [ ram>> ram-read ] if ;
 
-: (read-1) ( -- )
-  ;
+: (read-1) ( n address applix -- seq )
+  drop drop drop { 1 } ;
 
-: (read-2) ( -- )
-  ;
+: (read-2) ( n address applix -- seq )
+  drop drop drop { 2 } ;
 
-: (read-3) ( -- )
-  ;
+: (read-3) ( n address applix -- seq )
+  drop drop drop { 3 } ;
 
-: (read-4) ( -- )
-  ;
+: (read-4) ( n address applix -- seq )
+  drop drop drop { 4 } ;
 
 : (read-5) ( n address applix -- seq )
-  rom>> rom-read
-  ;
+  rom>> rom-read ;
 
-: (read-6) ( -- )
-  ;
+: (read-6) ( n address applix -- seq )
+  drop drop drop { 6 } ;
 
-: (read-7) ( -- )
-  ;
+: (read-7) ( n address applix -- seq )
+  drop drop drop { 7 } ;
 
-: (read-8) ( -- )
-  ;
+: (read-8) ( n address applix -- seq )
+  drop drop drop { 8 } ;
 
-: (read-9) ( -- )
-  ;
+: (read-9) ( n address applix -- seq )
+  drop drop drop { 9 } ;
 
-: (read-A) ( -- )
-  ;
+: (read-A) ( n address applix -- seq )
+  drop drop drop { 10 } ;
 
-: (read-B) ( -- )
-  ;
+: (read-B) ( n address applix -- seq )
+  drop drop drop { 11 } ;
 
-: (read-C) ( -- )
-  ;
+: (read-C) ( n address applix -- seq )
+  drop drop drop { 12 } ;
 
-: (read-D) ( -- )
-  ;
+: (read-D) ( n address applix -- seq )
+  drop drop drop { 13 } ;
 
-: (read-E) ( -- )
-  ;
+: (read-E) ( n address applix -- seq )
+  drop drop drop { 14 } ;
 
-: (read-F) ( -- )
-  ;
+: (read-F) ( n address applix -- seq )
+  drop drop drop { 15 } ;
 
 
 ! generate the memory map here
@@ -87,7 +85,55 @@ M: applix read-bytes
   [ readmap>> nth ] keep swap
   call( n address applix -- seq ) ;
 
+! at zero we allways write to ram
+: (write-0) ( seq address applix -- )
+  ram>> ram-write ;
 
+: (write-1) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-2) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-3) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-4) ( seq address applix -- )
+  drop drop drop ;
+
+! writing to ROM clears the boot flag so we can read ram
+: (write-5) ( seq address applix -- )
+  f >>boot drop drop drop ;
+
+: (write-6) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-7) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-8) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-9) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-A) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-B) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-C) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-D) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-E) ( seq address applix -- )
+  drop drop drop ;
+
+: (write-F) ( seq address applix -- )
+  drop drop drop ;
 
 ! generate the memory map here
 : applix-writemap ( applix -- array )
@@ -115,8 +161,8 @@ M: applix write-bytes
     16 [ mem-bad ] <array> >>readmap
     [ applix-readmap ] keep swap >>readmap
     16 [ mem-bad ] <array> >>writemap
+    [ applix-writemap ] keep swap >>writemap
     t >>boot    ! boot flag is used to indicate hard reset
-    ! now add 68000 CPU
     <disassembler> >>mnemo
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>

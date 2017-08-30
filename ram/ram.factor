@@ -22,6 +22,12 @@ TUPLE: ram array error ;
     [ swap [ dup ] dip + ] dip
     array>> subseq ;
 
+: ram-write ( seq address ram -- )
+  break [ dup length ] 2dip ! seq len address ram
+  [ swap ] dip ! seq address len ram
+  [ dup ] 2dip ! seq address address len ram
+  [ + ] dip ! seq address aend ram
+  [ array>> replace-slice ] keep array<< ;
 
 : <ram> ( array -- ram )
     ram new

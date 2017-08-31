@@ -4,98 +4,86 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
       prettyprint sequences freescale.68000.emulator byte-arrays
-      applix.ram namespaces
-      ;
+      applix.ram namespaces ascii words quotations arrays ;
 
 IN: applix.vpa
 
-TUPLE: vpa reset array start error ;
+! VPA decoder
+! $0070 0000 SCC
+! $0070 0081 RIPORT
+! $0070 0100 VIA Base
+! $0070 0180 CRT Address Register
 
-: vpa-start ( iport -- start )
-    start>> ;
+TUPLE: vpa reset readmap writemap ;
 
-: vpa-array ( iport -- array )
-    array>> ;
+: (vparead-0) ( n address cpu -- array )
+  drop drop drop { 0 } ;
 
-: vpa-size ( iport -- size )
-    vpa-array length ;
+: (vparead-1) ( n address cpu -- array )
+  drop drop drop { 1 } ;
 
-: vpa-end ( iport -- end )
-    [ vpa-start ] keep
-    vpa-size + ;
+: (vparead-2) ( n address cpu -- array )
+  drop drop drop { 2 } ;
 
-: vpa-error ( iport -- rom )
-    t >>error ;
+: (vparead-3) ( n address cpu -- array )
+  drop drop drop { 3 } ;
 
-! test the address is within rom start and end address
-: vpa-between ( address rom -- ? )
-    [ vpa-start ] [ vpa-end ] bi between? ;
+: (vparead-bad) ( n address cpu -- array )
+  drop drop drop { 4 } ;
 
-
-: vpa-index ( address rom -- index )
-    vpa-start - ;
-
-: vpa-read ( n address rom -- data )
-    [ vpa-between ] 2keep
-    rot
-    [
-        [ dup [ + ] dip swap ] dip
-        ! here we need to zero base the address to do indexing
-        [ [ drop ] dip vpa-index ] 2keep [ vpa-index ] keep
-        array>> subseq
-    ]
-    [ drop drop drop f ] if ;
-
-
-
-M: vpa model-changed
-  [ dup err>> ] dip swap   ! if err is false a memory has been read
+! generate the read map for vpa
+: vpa-readmap ( vpa -- array )
+  readmap>> dup
   [
-    [ reset>> ] keep swap
+    [ drop ] dip
     [
-      ! see if data is true to write false to read
-      [ memory-write? ] dip swap
-      [
-        drop drop
-        ]
-        [
-          [ dup memory-address ] dip
-          [ vpa-between ] keep swap
-          [
-            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
-            vpa-read >>data drop
-          ]
-          [
-            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
-            [ start>> + ] keep vpa-read >>data drop
-          ] if
-        ] if
-      ]
-      [
-        [ dup memory-address ] dip  ! go get that address
-        [ vpa-between ] keep swap
-        [
-          ! test if memory data
-          [ memory-write? ] dip swap
-            [
-              [ t >>data ] dip drop drop
-            ]
-          [
-            [ dup memory-address ] dip [ dup memory-nbytes ] 2dip
-            vpa-read >>data drop
-          ] if
-        ]
-        [ drop drop ] if
-      ] if
-    ]
-    [ drop drop ] if ;
+      >hex >upper
+      "(vparead-" swap append ")" append
+      "applix.vpa" lookup-word 1quotation
+    ] keep
+    [ swap ] dip swap [ set-nth ] keep
+  ] each-index ;
+
+: (vpawrite-0) ( seq address cpu -- )
+  drop drop drop ;
+
+: (vpawrite-1) ( seq address cpu -- )
+  drop drop drop ;
+
+: (vpawrite-2) ( seq address cpu -- )
+  drop drop drop ;
+
+: (vpawrite-3) ( seq address cpu -- )
+  drop drop drop ;
+
+: (vpawrite-bad) ( seq address cpu -- )
+  drop drop drop ;
+
+! generate the write map for VPA
+: vpa-writemap ( vpa -- array )
+  writemap>> dup
+  [
+    [ drop ] dip
+    [
+      >hex >upper
+      "(vpawrite-" swap append ")" append
+      "applix.vpa" lookup-word 1quotation
+    ] keep
+    [ swap ] dip swap [ set-nth ] keep
+  ] each-index ;
 
 
+: vpa-read ( n address cpu -- data )
+  break [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
+  [ readmap>> nth ] keep swap
+  call( n address applix -- seq ) ;
 
-: <vpa> ( array start -- iport )
-    vpa new swap
-    >>start  ! save start address
-    swap >>array ! save the array
-    t >>reset ! reset latch for rom mirror
-    f >>error
-;
+: vpa-write ( seq address cpu -- )
+  drop drop drop ;
+
+: <vpa> ( -- vpa )
+  vpa new
+  4 [ (vparead-bad) ] <array> >>readmap
+  [ vpa-readmap ] keep swap >>readmap
+  4 [ (vpawrite-bad) ] <array> >>writemap
+  [ vpa-writemap ] keep swap >>writemap ;

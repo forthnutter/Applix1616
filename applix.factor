@@ -11,7 +11,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix
 
-TUPLE: applix < cpu rom ram readmap writemap boot ;
+TUPLE: applix < cpu rom ram readmap writemap boot vpa ;
 
 : mem-bad ( -- )
   ;
@@ -40,7 +40,7 @@ TUPLE: applix < cpu rom ram readmap writemap boot ;
   drop drop drop { 6 } ;
 
 : (read-7) ( n address applix -- seq )
-  drop drop drop { 7 } ;
+  vpa-read ;
 
 : (read-8) ( n address applix -- seq )
   drop drop drop { 8 } ;
@@ -109,7 +109,7 @@ M: applix read-bytes
   drop drop drop ;
 
 : (write-7) ( seq address applix -- )
-  drop drop drop ;
+  vpa-write ;
 
 : (write-8) ( seq address applix -- )
   drop drop drop ;
@@ -167,7 +167,8 @@ M: applix write-bytes
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom
-    512 <byte-array> >>ram
+    512 <byte-array> >>ram  ! add some ram 
+    <vpa> >>vpa ! vpa decoder
     ! 0 1byte-array 0x700081 <iport> memory-add drop
     ;
 

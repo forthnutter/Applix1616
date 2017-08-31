@@ -4,10 +4,11 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models
       sequences freescale.68000.emulator byte-arrays
-      applix.ram namespaces
-      ;
+      applix.ram namespaces ;
 
 IN: applix.ioport
+
+
 
 TUPLE: ioport reset iomap ;
 
@@ -16,4 +17,4 @@ TUPLE: ioport reset iomap ;
 
 
 : <ioport> ( array -- ioport )
-    ioport new ;
+  ioport new ;

@@ -5,9 +5,9 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models prettyprint
       sequences freescale.68000.emulator byte-arrays
-      applix.iport applix.ram applix.rom applix.port applix.vpa namespaces
+      applix.iport applix.ram applix.rom applix.port namespaces
       io freescale.68000 freescale.68000.disassembler combinators
-      ascii words quotations arrays ;
+      ascii words quotations arrays applix.vpa ;
 
 IN: applix
 
@@ -40,7 +40,7 @@ TUPLE: applix < cpu rom ram readmap writemap boot vpa ;
   drop drop drop { 6 } ;
 
 : (read-7) ( n address applix -- seq )
-  vpa-read ;
+  vpa>> vpa-read ;
 
 : (read-8) ( n address applix -- seq )
   drop drop drop { 8 } ;
@@ -167,7 +167,7 @@ M: applix write-bytes
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom
-    512 <byte-array> >>ram  ! add some ram 
+    512 <byte-array> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
     ! 0 1byte-array 0x700081 <iport> memory-add drop
     ;

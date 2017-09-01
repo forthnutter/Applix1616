@@ -4,7 +4,7 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
       prettyprint sequences freescale.68000.emulator byte-arrays
-      applix.ram namespaces ascii words quotations arrays ;
+      namespaces ascii words quotations arrays applix ;
 
 IN: applix.vpa
 
@@ -14,17 +14,21 @@ IN: applix.vpa
 ! $0070 0100 VIA Base
 ! $0070 0180 CRT Address Register
 
-TUPLE: vpa reset readmap writemap ;
+TUPLE: vpa reset readmap writemap riport ;
 
+! SCC
 : (vparead-0) ( n address cpu -- array )
   drop drop drop { 0 } ;
 
-: (vparead-1) ( n address cpu -- array )
-  drop drop drop { 1 } ;
+! RIPORT
+: (vparead-1) ( n address vpa -- array )
+  [ drop drop ] dip riport>> 1byte-array ;
 
+! VIA
 : (vparead-2) ( n address cpu -- array )
   drop drop drop { 2 } ;
 
+! CRT
 : (vparead-3) ( n address cpu -- array )
   drop drop drop { 3 } ;
 
@@ -44,15 +48,19 @@ TUPLE: vpa reset readmap writemap ;
     [ swap ] dip swap [ set-nth ] keep
   ] each-index ;
 
+! SCC
 : (vpawrite-0) ( seq address cpu -- )
   drop drop drop ;
 
+! RIPORT
 : (vpawrite-1) ( seq address cpu -- )
   drop drop drop ;
 
+! VIA
 : (vpawrite-2) ( seq address cpu -- )
   drop drop drop ;
 
+! CRT
 : (vpawrite-3) ( seq address cpu -- )
   drop drop drop ;
 
@@ -73,7 +81,7 @@ TUPLE: vpa reset readmap writemap ;
   ] each-index ;
 
 
-: vpa-read ( n address cpu -- data )
+: vpa-read ( n address vpa -- data )
   break [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
   [ readmap>> nth ] keep swap
   call( n address applix -- seq ) ;
@@ -86,4 +94,5 @@ TUPLE: vpa reset readmap writemap ;
   4 [ (vparead-bad) ] <array> >>readmap
   [ vpa-readmap ] keep swap >>readmap
   4 [ (vpawrite-bad) ] <array> >>writemap
-  [ vpa-writemap ] keep swap >>writemap ;
+  [ vpa-writemap ] keep swap >>writemap
+  0 >>riport ;

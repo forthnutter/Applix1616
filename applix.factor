@@ -5,13 +5,13 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models prettyprint
       sequences freescale.68000.emulator byte-arrays
-      applix.iport applix.ram applix.rom applix.port namespaces
+      applix.ioport applix.ram applix.rom namespaces
       io freescale.68000 freescale.68000.disassembler combinators
       ascii words quotations arrays applix.vpa ;
 
 IN: applix
 
-TUPLE: applix < cpu rom ram readmap writemap boot vpa ;
+TUPLE: applix < cpu rom ram readmap writemap boot vpa ioport ;
 
 : mem-bad ( -- )
   ;
@@ -37,7 +37,7 @@ TUPLE: applix < cpu rom ram readmap writemap boot vpa ;
   rom>> rom-read ;
 
 : (read-6) ( n address applix -- seq )
-  drop drop drop { 6 } ;
+  ioport>> ioport-read ;
 
 : (read-7) ( n address applix -- seq )
   vpa>> vpa-read ;
@@ -106,10 +106,10 @@ M: applix read-bytes
   f >>boot drop drop drop ;
 
 : (write-6) ( seq address applix -- )
-  drop drop drop ;
+  ioport>> ioport-write ;
 
 : (write-7) ( seq address applix -- )
-  vpa-write ;
+  vpa>> vpa-write ;
 
 : (write-8) ( seq address applix -- )
   drop drop drop ;
@@ -169,8 +169,7 @@ M: applix write-bytes
     <rom> >>rom
     512 <byte-array> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
-    ! 0 1byte-array 0x700081 <iport> memory-add drop
-    ;
+    <ioport> >>ioport ;
 
 
 : applix-reset ( cpu -- )

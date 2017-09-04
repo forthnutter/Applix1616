@@ -8,9 +8,8 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix.ioport
 
-
-
 ! IO decoder
+! $0060 0000 PALETTE
 ! $0060 0001 CENTRONICS
 ! $0060 0081 DAC
 ! $0060 0101 VIDLATCH
@@ -19,22 +18,23 @@ IN: applix.ioport
 TUPLE: ioport reset readmap writemap riport ;
 
 !
-: (ioread-0) ( n address cpu -- array )
-  drop drop drop { 0 } ;
+: (ioread-0) ( n address ioport -- array )
+  [ dup 0 bit? ] dip swap ! test A0 odd or even
+  [ centronics-read ] [ palette-read ] if ;
 
 !
-: (ioread-1) ( n address vpa -- array )
+: (ioread-1) ( n address ioport -- array )
   drop drop drop { 1 } ;
 
 !
-: (ioread-2) ( n address cpu -- array )
+: (ioread-2) ( n address ioport -- array )
   drop drop drop { 2 } ;
 
 !
-: (ioread-3) ( n address cpu -- array )
+: (ioread-3) ( n address ioport -- array )
   drop drop drop { 3 } ;
 
-: (ioread-bad) ( n address cpu -- array )
+: (ioread-bad) ( n address ioport -- array )
   drop drop drop { 4 } ;
 
 ! generate the read map for vpa
@@ -51,22 +51,23 @@ TUPLE: ioport reset readmap writemap riport ;
   ] each-index ;
 
 ! PALETTE and CENTRONICS
-: (iowrite-0) ( seq address cpu -- )
-  drop drop drop ;
+: (iowrite-0) ( seq address ioport -- )
+  [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
+  [ centronics-write ] [ palette-write ] if ;
 
 ! DAC
-: (iowrite-1) ( seq address cpu -- )
+: (iowrite-1) ( seq address ioport -- )
   drop drop drop ;
 
 ! VIDLATCH
-: (iowrite-2) ( seq address cpu -- )
+: (iowrite-2) ( seq address ioport -- )
   drop drop drop ;
 
 ! AMUX
-: (iowrite-3) ( seq address cpu -- )
+: (iowrite-3) ( seq address ioport -- )
   drop drop drop ;
 
-: (iowrite-bad) ( seq address cpu -- )
+: (iowrite-bad) ( seq address port -- )
   drop drop drop ;
 
 ! generate the write map for VPA

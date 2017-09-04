@@ -2,9 +2,9 @@
 ! See http://factorcode.org/license.txt for BSD license.
 !
 USING: accessors kernel math math.bitwise math.order math.parser
-      freescale.binfile tools.continuations models
-      sequences freescale.68000.emulator byte-arrays
-      applix.ram namespaces ;
+      freescale.binfile tools.continuations models arrays
+      sequences freescale.68000.emulator byte-arrays quotations
+      applix.centronics applix.palette namespaces ascii words ;
 
 IN: applix.ioport
 
@@ -52,12 +52,12 @@ TUPLE: ioport reset readmap writemap riport ;
 
 ! PALETTE and CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
-  [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
+  break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ centronics-write ] [ palette-write ] if ;
 
 ! DAC
 : (iowrite-1) ( seq address ioport -- )
-  drop drop drop ;
+  break drop drop drop ;
 
 ! VIDLATCH
 : (iowrite-2) ( seq address ioport -- )

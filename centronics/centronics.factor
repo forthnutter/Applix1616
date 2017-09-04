@@ -12,9 +12,11 @@ IN: applix.centronics
 TUPLE: centronics data ;
 
 
-: centronics-read ( n address rom -- data )
-  ;
+: centronics-read ( n address centronics -- data )
+  drop drop drop { 0 } ;
 
+: centronics-write ( n address centronics -- )
+  drop drop drop ;
 
 : <centronics> ( -- centronics )
     centronics new ;

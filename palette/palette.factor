@@ -12,17 +12,12 @@ IN: applix.palette
 TUPLE: palette array ;
 
 
-: palette-read ( n address rom -- data )
-    [ port-between ] 2keep
-    rot
-    [
-        [ dup [ + ] dip swap ] dip
-        ! here we need to zero base the address to do indexing
-        [ [ drop ] dip port-index ] 2keep [ port-index ] keep
-        array>> subseq
-    ]
-    [ drop drop drop f ] if ;
+: palette-read ( n address paletter -- seq )
+    drop drop drop { 0 } ;
 
+
+: palette-write ( seq address palette -- )
+  drop drop drop ;
 
 : <palette> ( -- palette )
-    centronics new ;
+    palette new ;

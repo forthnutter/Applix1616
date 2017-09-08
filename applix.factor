@@ -187,3 +187,8 @@ M: applix write-bytes
 
 : sx ( applix -- applix' )
   [ s drop ] [ x ] bi ;
+
+! list off instruction
+: l ( applix address -- applix' )
+  [ dup 16 swap ] dip swap list-mnemonic-dump
+  [ print ] each ;

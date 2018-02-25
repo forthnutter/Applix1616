@@ -11,7 +11,9 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix
 
-TUPLE: applix < cpu rom ram readmap writemap boot vpa ioport ;
+! TUPLE: applix < cpu rom ram readmap writemap boot vpa ioport ;
+
+TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport ;
 
 : mem-bad ( -- )
   ;
@@ -156,14 +158,14 @@ M: applix write-bytes
 
 
 : <applix> ( -- applix )
-    applix new-cpu ! create the tuple for applix
+    applix new-68000 ! create the tuple for applix
     ! memap is memory decoder
     16 [ mem-bad ] <array> >>readmap
     [ applix-readmap ] keep swap >>readmap
     16 [ mem-bad ] <array> >>writemap
     [ applix-writemap ] keep swap >>writemap
     t >>boot    ! boot flag is used to indicate hard reset
-    <disassembler> >>mnemo
+    ! <disassembler> >>mnemo
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom

@@ -194,3 +194,13 @@ M: applix write-bytes
 : l ( applix address -- applix' )
   [ dup 16 swap ] dip swap list-mnemonic-dump
   [ print ] each ;
+
+! help list
+: h ( -- )
+  V{ } clone
+  [ "l ( applix address -- applix ) list 16 lines instructions" swap push ] keep
+  [ "s ( applix -- applix ) Single Step" swap push ] keep
+  [ "sx ( applix -- applix ) Single Step and Display Registers" swap push ] keep
+  [ "x ( applix -- applix ) Display all registers" swap push ] keep
+  [ print ] each
+  ;

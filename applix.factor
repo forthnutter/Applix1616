@@ -181,7 +181,8 @@ M: applix write-bytes
 : x ( applix -- applix' )
   [ string-DX [ print ] each ] keep
   [ string-AX [ print ] each ] keep
-  [ string-PC print ] keep ;
+  [ string-PC print ] keep
+  [ string-status print ] keep ;
 
 ! execute single instruction
 : s ( applix -- applix' )

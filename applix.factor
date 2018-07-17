@@ -38,10 +38,12 @@ TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport ;
 : (read-5) ( n address applix -- seq )
   rom>> rom-read ;
 
+! 0x00600000 IOSEL Signal
 : (read-6) ( n address applix -- seq )
   ioport>> ioport-read ;
 
 : (read-7) ( n address applix -- seq )
+  break
   vpa>> vpa-read ;
 
 : (read-8) ( n address applix -- seq )

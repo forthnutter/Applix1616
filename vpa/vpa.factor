@@ -4,7 +4,7 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
       prettyprint sequences freescale.68000.emulator byte-arrays
-      namespaces ascii words quotations arrays applix ;
+      namespaces ascii words quotations arrays applix applix.riport ;
 
 IN: applix.vpa
 
@@ -22,7 +22,9 @@ TUPLE: vpa reset readmap writemap riport ;
 
 ! RIPORT
 : (vparead-1) ( n address vpa -- array )
-  [ drop drop ] dip riport>> 1byte-array ;
+  [ drop ] 2dip       ! do not need n
+  [ 1 = ] dip swap    ! test addres for value of 1
+  [ riport>> riport-read 1byte-array ] [ drop f ] if ;
 
 ! VIA
 : (vparead-2) ( n address cpu -- array )
@@ -95,4 +97,4 @@ TUPLE: vpa reset readmap writemap riport ;
   [ vpa-readmap ] keep swap >>readmap
   4 [ (vpawrite-bad) ] <array> >>writemap
   [ vpa-writemap ] keep swap >>writemap
-  0 >>riport ;
+  <riport> >>riport ;

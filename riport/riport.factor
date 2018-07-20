@@ -7,18 +7,19 @@ USING: accessors kernel math math.bitwise math.order math.parser
       applix.ram namespaces
       ;
 
-IN: applix.iport
+IN: applix.riport
 
-TUPLE: iport data ;
-
-
+TUPLE: riport data ;
 
 
 
-: iport-read ( iport -- data )
+
+
+: riport-read ( iport -- data )
   data>> ;
 
 
 
-: <iport> ( -- iport )
-    iport new ;
+: <riport> ( -- iport )
+    riport new
+    0 >>data ;

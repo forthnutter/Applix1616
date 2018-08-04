@@ -42,6 +42,7 @@ TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport ;
 : (read-6) ( n address applix -- seq )
   ioport>> ioport-read ;
 
+! 0x00700000 EVPA
 : (read-7) ( n address applix -- seq )
   break
   vpa>> vpa-read ;

@@ -18,20 +18,24 @@ TUPLE: vpa reset readmap writemap riport ;
 
 ! SCC
 : (vparead-0) ( n address cpu -- array )
+  break
   drop drop drop { 0 } ;
 
 ! RIPORT
 : (vparead-1) ( n address vpa -- array )
+  break
   [ drop ] 2dip       ! do not need n
   [ 1 = ] dip swap    ! test addres for value of 1
   [ riport>> riport-read 1byte-array ] [ drop f ] if ;
 
 ! VIA
 : (vparead-2) ( n address cpu -- array )
+  break
   drop drop drop { 2 } ;
 
 ! CRT
 : (vparead-3) ( n address cpu -- array )
+  break
   drop drop drop { 3 } ;
 
 : (vparead-bad) ( n address cpu -- array )
@@ -52,18 +56,22 @@ TUPLE: vpa reset readmap writemap riport ;
 
 ! SCC
 : (vpawrite-0) ( seq address cpu -- )
+  break
   drop drop drop ;
 
 ! RIPORT
 : (vpawrite-1) ( seq address cpu -- )
+  break
   drop drop drop ;
 
 ! VIA
 : (vpawrite-2) ( seq address cpu -- )
+  break
   drop drop drop ;
 
 ! CRT
 : (vpawrite-3) ( seq address cpu -- )
+  break
   drop drop drop ;
 
 : (vpawrite-bad) ( seq address cpu -- )
@@ -84,7 +92,7 @@ TUPLE: vpa reset readmap writemap riport ;
 
 
 : vpa-read ( n address vpa -- data )
-  break [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
+  [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
   [ readmap>> nth ] keep swap
   call( n address applix -- seq ) ;
 

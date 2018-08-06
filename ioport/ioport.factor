@@ -19,19 +19,23 @@ TUPLE: ioport reset readmap writemap riport ;
 
 !
 : (ioread-0) ( n address ioport -- array )
+  break
   [ dup 0 bit? ] dip swap ! test A0 odd or even
   [ centronics-read ] [ palette-read ] if ;
 
 !
 : (ioread-1) ( n address ioport -- array )
+  break
   drop drop drop { 1 } ;
 
 !
 : (ioread-2) ( n address ioport -- array )
+  break
   drop drop drop { 2 } ;
 
 !
 : (ioread-3) ( n address ioport -- array )
+  break
   drop drop drop { 3 } ;
 
 : (ioread-bad) ( n address ioport -- array )
@@ -50,21 +54,23 @@ TUPLE: ioport reset readmap writemap riport ;
     [ swap ] dip swap [ set-nth ] keep
   ] each-index ;
 
-! PALETTE and CENTRONICS
+! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
   break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ centronics-write ] [ palette-write ] if ;
 
-! DAC
+! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )
   break drop drop drop ;
 
-! VIDLATCH
+! $00600101 VIDLATCH
 : (iowrite-2) ( seq address ioport -- )
+  break
   drop drop drop ;
 
-! AMUX
+! $00600181 AMUX
 : (iowrite-3) ( seq address ioport -- )
+  break
   drop drop drop ;
 
 : (iowrite-bad) ( seq address port -- )

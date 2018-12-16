@@ -199,6 +199,9 @@ M: applix write-bytes
   [ dup 16 swap ] dip swap list-mnemonic-dump
   [ print ] each ;
 
+: pcl ( applix -- applix )
+  dup pc>> l ;
+  
 ! help list
 : h ( -- )
   V{ } clone

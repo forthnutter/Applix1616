@@ -44,7 +44,6 @@ TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport ;
 
 ! 0x00700000 EVPA
 : (read-7) ( n address applix -- seq )
-  break
   vpa>> vpa-read ;
 
 : (read-8) ( n address applix -- seq )
@@ -111,6 +110,7 @@ M: applix read-bytes
   f >>boot drop drop drop ;
 
 : (write-6) ( seq address applix -- )
+  break
   ioport>> ioport-write ;
 
 : (write-7) ( seq address applix -- )
@@ -201,7 +201,7 @@ M: applix write-bytes
 
 : pcl ( applix -- applix )
   dup pc>> l ;
-  
+
 ! help list
 : h ( -- )
   V{ } clone

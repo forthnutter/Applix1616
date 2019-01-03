@@ -4,25 +4,28 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models arrays
       sequences freescale.68000.emulator byte-arrays quotations
-      applix.centronics applix.palette namespaces ascii words
+      applix.centronics applix.pallette namespaces ascii words
       applix.ioport.dac ;
 
 IN: applix.ioport
 
 ! IO decoder
-! $0060 0000 PALETTE
-! $0060 0001 CENTRONICS
-! $0060 0081 DAC
-! $0060 0101 VIDLATCH
-! $0060 0181 AMUX
+! $0060 0000 PALLETTE (WO) Pallette 0
+! $0060 0020 PALLETTE (WO) Pallette 1
+! $0060 0040 PALLETTE (WO) Pallette 2
+! $0060 0060 PALLETTE (WO) Pallette 3
+! $0060 0001 CENTRONICS (WO)
+! $0060 0081 DAC (WO)
+! $0060 0101 VIDLATCH (WO)
+! $0060 0181 AMUX  (WO)
 
-TUPLE: ioport reset readmap writemap riport dac ;
+TUPLE: ioport reset readmap writemap riport dac pallette cent ;
 
 !
 : (ioread-0) ( n address ioport -- array )
   break
   [ dup 0 bit? ] dip swap ! test A0 odd or even
-  [ centronics-read ] [ palette-read ] if ;
+  [ centronics-read ] [ pallette>> palette-read ] if ;
 
 !
 : (ioread-1) ( n address ioport -- array )
@@ -58,7 +61,7 @@ TUPLE: ioport reset readmap writemap riport dac ;
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
   break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
-  [ centronics-write ] [ palette-write ] if ;
+  [ centronics-write ] [ pallette>> palette-write ] if ;
 
 ! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )
@@ -84,7 +87,7 @@ TUPLE: ioport reset readmap writemap riport dac ;
     [ drop ] dip
     [
       >hex >upper
-      "(vpawrite-" swap append ")" append
+      "(iowrite-" swap append ")" append
       "applix.ioport" lookup-word 1quotation
     ] keep
     [ swap ] dip swap [ set-nth ] keep
@@ -96,10 +99,10 @@ TUPLE: ioport reset readmap writemap riport dac ;
   [ readmap>> nth ] keep swap
   call( n address applix -- seq ) ;
 
-: ioport-write ( seq address cpu -- )
+: ioport-write ( seq address ioport -- )
   break [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
   [ writemap>> nth ] keep swap
-  call ( n aaddress applix -- ) ;
+  call( n aaddress applix -- ) ;
 
 : <ioport> ( -- ioport )
   ioport new
@@ -108,4 +111,5 @@ TUPLE: ioport reset readmap writemap riport dac ;
   4 [ (iowrite-bad) ] <array> >>writemap
   [ ioport-writemap ] keep swap >>writemap
   0 >>riport
-  0 <dac> >>dac ;
+  0 <dac> >>dac
+  <pallette> >>pallette ;

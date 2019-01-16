@@ -1,6 +1,11 @@
 ! Copyright (C) 2016 Joseph Moschini.  a.k.a. forthnutter
 ! See http://factorcode.org/license.txt for BSD license.
 !
+! The Applix 1616 has a 74LS670 Addressable Resister Two Bit read Address
+! and Two bir writre address.
+! Could called a very small memory.
+! The 68000 has the ability to write to registers but cannot read data back.
+
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models models.memory
       prettyprint sequences freescale.68000.emulator byte-arrays

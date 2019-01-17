@@ -25,7 +25,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent ;
 : (ioread-0) ( n address ioport -- array )
   break
   [ dup 0 bit? ] dip swap ! test A0 odd or even
-  [ centronics-read ] [ pallette>> palette-read ] if ;
+  [ centronics-read ] [ pallette>> pallette-read ] if ;
 
 !
 : (ioread-1) ( n address ioport -- array )
@@ -61,7 +61,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent ;
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
   break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
-  [ centronics-write ] [ pallette>> palette-write ] if ;
+  [ centronics-write ] [ pallette>> pallette-write ] if ;
 
 ! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )

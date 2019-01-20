@@ -5,7 +5,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models arrays
       sequences freescale.68000.emulator byte-arrays quotations
       applix.centronics applix.pallette namespaces ascii words
-      applix.ioport.dac ;
+      applix.ioport.dac applix.ioport.vlatch ;
 
 IN: applix.ioport
 
@@ -19,7 +19,7 @@ IN: applix.ioport
 ! $0060 0101 VIDLATCH (WO)
 ! $0060 0181 AMUX  (WO)
 
-TUPLE: ioport reset readmap writemap riport dac pallette cent ;
+TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 !
 : (ioread-0) ( n address ioport -- array )
@@ -112,4 +112,5 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent ;
   [ ioport-writemap ] keep swap >>writemap
   0 >>riport
   0 <dac> >>dac
-  <pallette> >>pallette ;
+  <pallette> >>pallette
+  <vlatch> >>vlatch ;

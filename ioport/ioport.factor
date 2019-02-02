@@ -113,4 +113,4 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
   0 >>riport
   0 <dac> >>dac
   <pallette> >>pallette
-  <vlatch> >>vlatch ;
+  0 <vlatch> >>vlatch ;

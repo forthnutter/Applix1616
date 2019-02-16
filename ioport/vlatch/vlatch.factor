@@ -4,7 +4,7 @@
 ! simulate the Digital to Analog Latch on the applix
 
 USING: accessors kernel math math.bitwise math.order math.parser
-      freescale.binfile tools.continuations models arrays
+      freescale.binfile tools.continuations arrays
       sequences freescale.68000.emulator byte-arrays quotations
       namespaces ascii words models ;
 

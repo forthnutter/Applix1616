@@ -65,7 +65,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )
-  break [ first ] 2dip [ drop ] dip dac>> dac-write ;
+  [ first ] 2dip [ drop ] dip dac>> dac-write ;
 
 ! $00600101 VIDLATCH
 : (iowrite-2) ( seq address ioport -- )
@@ -100,7 +100,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
   call( n address applix -- seq ) ;
 
 : ioport-write ( seq address ioport -- )
-  break [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
+  [ [ 6 0 bit-range ] [ 8 7 bit-range ] bi ] dip
   [ writemap>> nth ] keep swap
   call( n aaddress applix -- ) ;
 

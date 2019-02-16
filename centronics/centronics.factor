@@ -9,14 +9,14 @@ USING: accessors kernel math math.bitwise math.order math.parser
 
 IN: applix.centronics
 
-TUPLE: centronics data ;
+TUPLE: centronics < model ;
 
 
 : centronics-read ( n address centronics -- data )
   drop drop drop { 0 } ;
 
 : centronics-write ( n address centronics -- )
-  drop drop drop ;
+  break [ drop ] dip set-model ;
 
 : <centronics> ( -- centronics )
-    centronics new ;
+    centronics new-model ;

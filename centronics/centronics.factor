@@ -18,5 +18,5 @@ TUPLE: centronics < model ;
 : centronics-write ( n address centronics -- )
   break [ drop ] dip set-model ;
 
-: <centronics> ( -- centronics )
-    centronics new-model ;
+: <centronics> ( value -- centronics )
+  break  centronics new-model ;

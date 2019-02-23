@@ -61,7 +61,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
   break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
-  [ centronics-write ] [ pallette>> pallette-write ] if ;
+  [ cent>> centronics-write ] [ pallette>> pallette-write ] if ;
 
 ! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )
@@ -113,4 +113,5 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
   0 >>riport
   0 <dac> >>dac
   <pallette> >>pallette
-  0 <vlatch> >>vlatch ;
+  0 <vlatch> >>vlatch
+  0 <centronics> >>cent ;

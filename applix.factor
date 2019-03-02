@@ -110,7 +110,6 @@ M: applix read-bytes
   f >>boot drop drop drop ;
 
 : (write-6) ( seq address applix -- )
-  break
   ioport>> ioport-write ;
 
 : (write-7) ( seq address applix -- )

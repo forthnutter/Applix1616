@@ -4,7 +4,7 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models arrays
       sequences freescale.68000.emulator byte-arrays quotations
-      applix.centronics applix.pallette namespaces ascii words
+      applix.ioport.centronics applix.pallette namespaces ascii words
       applix.ioport.dac applix.ioport.vlatch ;
 
 IN: applix.ioport
@@ -60,7 +60,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
-  break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
+  [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ cent>> centronics-write ] [ pallette>> pallette-write ] if ;
 
 ! $00600081 DAC

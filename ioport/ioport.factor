@@ -69,8 +69,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600101 VIDLATCH
 : (iowrite-2) ( seq address ioport -- )
-  break
-  drop drop drop ;
+  break vlatch>> vlatch-write ;
 
 ! $00600181 AMUX
 : (iowrite-3) ( seq address ioport -- )

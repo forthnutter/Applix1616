@@ -7,7 +7,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
       applix.ram namespaces arrays
       ;
 
-IN: applix.centronics
+IN: applix.ioport.centronics
 
 TUPLE: centronics < model ;
 

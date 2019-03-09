@@ -198,6 +198,7 @@ M: applix write-bytes
   [ dup 16 swap ] dip swap list-mnemonic-dump
   [ print ] each ;
 
+! list lines from pc
 : pcl ( applix -- applix )
   dup pc>> l ;
 

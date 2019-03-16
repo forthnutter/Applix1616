@@ -22,7 +22,7 @@ IN: applix.ioport
 TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 !
-: (ioread-0) ( n address ioport -- array )
+: (ioread-0) ( address ioport -- array )
   break
   [ dup 0 bit? ] dip swap ! test A0 odd or even
   [ centronics-read ] [ pallette>> pallette-read ] if ;
@@ -60,6 +60,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
+  [ first ] 2dip
   [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ cent>> centronics-write ] [ pallette>> pallette-write ] if ;
 
@@ -69,7 +70,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600101 VIDLATCH
 : (iowrite-2) ( seq address ioport -- )
-  break vlatch>> vlatch-write ;
+  break [ first ] 2dip vlatch>> vlatch-write ;
 
 ! $00600181 AMUX
 : (iowrite-3) ( seq address ioport -- )

@@ -5,7 +5,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models arrays
       sequences freescale.68000.emulator byte-arrays quotations
       applix.ioport.centronics applix.pallette namespaces ascii words
-      applix.ioport.dac applix.ioport.vlatch ;
+      applix.ioport.dac applix.ioport.vlatch applix.ioport.amux ;
 
 IN: applix.ioport
 
@@ -19,7 +19,8 @@ IN: applix.ioport
 ! $0060 0101 VIDLATCH (WO)
 ! $0060 0181 AMUX  (WO)
 
-TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
+TUPLE: ioport reset readmap writemap
+  riport dac pallette cent vlatch amux ;
 
 !
 : (ioread-0) ( address ioport -- array )
@@ -60,7 +61,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
-  [ first ] 2dip
+  break [ first ] 2dip
   [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ cent>> centronics-write ] [ pallette>> pallette-write ] if ;
 
@@ -75,7 +76,7 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
 ! $00600181 AMUX
 : (iowrite-3) ( seq address ioport -- )
   break
-  drop drop drop ;
+  amux>> amux-write ;
 
 : (iowrite-bad) ( seq address port -- )
   drop drop drop ;
@@ -114,4 +115,5 @@ TUPLE: ioport reset readmap writemap riport dac pallette cent vlatch ;
   0 <dac> >>dac
   <pallette> >>pallette
   0 <vlatch> >>vlatch
-  0 <centronics> >>cent ;
+  0 <centronics> >>cent
+  0 <amux> >>amux ;

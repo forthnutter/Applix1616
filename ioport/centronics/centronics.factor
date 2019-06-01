@@ -12,7 +12,7 @@ IN: applix.ioport.centronics
 TUPLE: centronics < model ;
 
 
-: centronics-read ( address centronics -- data )
+: centronics-read ( address centronics -- seq )
   break [ drop ] dip value>> 1array ;
 
 : centronics-write ( n address centronics -- )

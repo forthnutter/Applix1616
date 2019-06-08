@@ -4,7 +4,7 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models arrays
       sequences freescale.68000.emulator byte-arrays quotations
-      applix.ioport.centronics applix.pallette namespaces ascii words
+      applix.ioport.centronics applix.ioport.pallette namespaces ascii words
       applix.ioport.dac applix.ioport.vlatch applix.ioport.amux ;
 
 IN: applix.ioport
@@ -61,22 +61,20 @@ TUPLE: ioport reset readmap writemap
 
 ! $00600000 PALETTE and $00600001 CENTRONICS
 : (iowrite-0) ( seq address ioport -- )
-  break [ first ] 2dip
-  [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
+  break [ dup 0 bit? ] dip swap ! get A0 to see if we are even or odd.
   [ cent>> centronics-write ] [ pallette>> pallette-write ] if ;
 
 ! $00600081 DAC
 : (iowrite-1) ( seq address ioport -- )
-  [ first ] 2dip [ drop ] dip dac>> dac-write ;
+  break dac>> dac-write ;
 
 ! $00600101 VIDLATCH
 : (iowrite-2) ( seq address ioport -- )
-  break [ first ] 2dip vlatch>> vlatch-write ;
+  break vlatch>> vlatch-write ;
 
 ! $00600181 AMUX
 : (iowrite-3) ( seq address ioport -- )
-  break
-  amux>> amux-write ;
+  break amux>> amux-write ;
 
 : (iowrite-bad) ( seq address port -- )
   drop drop drop ;

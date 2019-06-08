@@ -12,7 +12,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
       applix.ram namespaces arrays
       ;
 
-IN: applix.pallette
+IN: applix.ioport.pallette
 
 TUPLE: pallette array ;
 

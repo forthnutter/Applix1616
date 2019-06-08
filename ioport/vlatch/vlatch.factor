@@ -13,13 +13,13 @@ IN: applix.ioport.vlatch
 TUPLE: vlatch < model ;
 
 
-: vlatch-write ( value addr vl -- )
+: vlatch-write ( seq addr vl -- )
   [ vlatch? ] keep swap
-  [ [ drop ] dip set-model ] [ drop drop drop ] if ;
+  [ [ drop first ] dip set-model ] [ drop drop drop ] if ;
 
 : vlatch-read ( addr vl -- value )
   [ vlatch? ] keep swap
-  [ [ drop ] dip value>> ] [ drop drop 0 ] if ;
+  [ [ drop ] dip value>> 1array ] [ drop drop 0 1array ] if ;
 
 
 : <vlatch> ( value -- dac )

@@ -13,13 +13,13 @@ IN: applix.ioport.dac
 TUPLE: dac < model ;
 
 
-: dac-write ( value dac -- )
-  [ dac? ] keep swap
-  [ set-model ] [ drop drop ] if ;
+: dac-write ( seq adress dac -- )
+  [ drop ] dip [ dac? ] keep swap
+  [ [ first ] dip set-model ] [ drop drop ] if ;
 
-: dac-read ( dac -- value )
+: dac-read ( dac -- seq )
   [ dac? ] keep swap
-  [ value>> ] [ drop 0 ] if ;
+  [ value>> 1array ] [ drop 0 ] if ;
 
 
 : <dac> ( value -- dac )

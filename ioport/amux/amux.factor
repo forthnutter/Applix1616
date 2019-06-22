@@ -26,7 +26,6 @@ TUPLE: amux < model ;
 
 
 : amux-write ( seq address amux -- )
-  break
   [ drop first ] dip set-model ;
 
 : <amux> ( value -- amux )

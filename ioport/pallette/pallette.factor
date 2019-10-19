@@ -18,11 +18,10 @@ TUPLE: pallette array ;
 
 
 : pallette-read ( address paletter -- seq )
-  break [ 6 5 bit-range ] dip array>> nth 1array ;
+  [ 6 5 bit-range ] dip array>> nth 1array ;
 
 
 : pallette-write ( seq address palette -- )
-  break
   [
     6 5 bit-range
     [ first 4 bits ] dip

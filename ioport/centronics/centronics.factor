@@ -13,10 +13,10 @@ TUPLE: centronics < model ;
 
 
 : centronics-read ( address centronics -- seq )
-  break [ drop ] dip value>> 1array ;
+  [ drop ] dip value>> 1array ;
 
 : centronics-write ( seq address centronics -- )
-  break [ drop first ] dip set-model ;
+  [ drop first ] dip set-model ;
 
 : <centronics> ( value -- centronics )
   centronics new-model ;

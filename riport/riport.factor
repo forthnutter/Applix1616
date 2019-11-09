@@ -22,4 +22,4 @@ TUPLE: riport data ;
 
 : <riport> ( -- iport )
     riport new
-    0 >>data ;
+    1 >>data ;

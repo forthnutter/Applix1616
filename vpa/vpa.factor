@@ -23,6 +23,7 @@ TUPLE: vpa reset readmap writemap riport ;
 
 ! RIPORT
 : (vparead-1) ( n address vpa -- array )
+  break
   [ drop ] 2dip       ! do not need n
   [ 1 = ] dip swap    ! test addres for value of 1
   [ riport>> riport-read 1byte-array ] [ drop f ] if ;

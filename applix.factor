@@ -202,6 +202,10 @@ M: applix write-bytes
 : pcl ( applix -- applix )
   dup pc>> l ;
 
+! repeat steps
+: r ( applix nn -- applix' )
+  [ dup ] dip swap run-steps ;
+  
 ! help list
 : h ( -- )
   V{ } clone

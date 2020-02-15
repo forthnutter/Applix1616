@@ -1,5 +1,5 @@
 USING: accessors kernel math math.bitwise math.order math.parser
-      freescale.binfile tools.continuations models models.memory
+      freescale.binfile tools.continuations models
       prettyprint sequences
       ;
 

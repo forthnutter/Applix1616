@@ -7,7 +7,7 @@
 ! The 68000 has the ability to write to registers but cannot read data back.
 
 USING: accessors kernel math math.bitwise math.order math.parser
-      freescale.binfile tools.continuations models models.memory
+      freescale.binfile tools.continuations models
       prettyprint sequences freescale.68000.emulator byte-arrays
       applix.ram namespaces arrays
       ;

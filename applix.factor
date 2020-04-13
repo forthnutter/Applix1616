@@ -171,7 +171,8 @@ M: applix write-bytes
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom
-    512 <byte-array> >>ram  ! add some ram
+    1024 <byte-array>    ! this the ram 
+    <ram> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
     <ioport> >>ioport ;
 
@@ -205,7 +206,7 @@ M: applix write-bytes
 ! repeat steps
 : r ( applix nn -- applix' )
   [ dup ] dip swap run-steps ;
-  
+
 ! help list
 : h ( -- )
   V{ } clone

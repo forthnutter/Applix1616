@@ -171,7 +171,7 @@ M: applix write-bytes
     ! build ROM with rom data
     "work/applix/A1616OSV045.bin" <binfile>
     <rom> >>rom
-    1024 <byte-array>    ! this the ram 
+    1024 <byte-array>    ! this the ram
     <ram> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
     <ioport> >>ioport ;
@@ -211,6 +211,7 @@ M: applix write-bytes
 : h ( -- )
   V{ } clone
   [ "l ( applix address -- applix ) list 16 lines instructions" swap push ] keep
+  [ "pcl ( -- ) list 16 lines from PC addess" swap push ] keep
   [ "s ( applix -- applix ) Single Step" swap push ] keep
   [ "sx ( applix -- applix ) Single Step and Display Registers" swap push ] keep
   [ "x ( applix -- applix ) Display all registers" swap push ] keep

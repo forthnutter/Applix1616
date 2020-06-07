@@ -14,7 +14,7 @@ IN: applix.vpa
 ! $0070 0100 VIA Base
 ! $0070 0180 CRT Address Register
 
-TUPLE: vpa reset readmap writemap riport ;
+TUPLE: vpa reset readmap writemap riport m6845 ;
 
 ! SCC
 : (vparead-0) ( n address cpu -- array )

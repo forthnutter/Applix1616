@@ -6,11 +6,14 @@ TUPLE: mc6845 address data ;
 
 GENERIC: reset ( mc6845 --  ) ;
 
-! reset all registers
-M: reset 
+! reset all registers a reset signal has happend
+M: reset
+  data>>
+  [ 0 ] each
 ;
 
 
 ! Create the tuple
 : <mc6845> ( -- mc6845 )
-  mc6845 new ;
+  mc6845 new
+  17 <arra> >>data ;

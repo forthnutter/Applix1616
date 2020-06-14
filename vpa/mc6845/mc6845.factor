@@ -7,9 +7,9 @@ TUPLE: mc6845 address data ;
 GENERIC: reset ( mc6845 --  ) ;
 
 ! reset all registers a reset signal has happend
-M: reset
+M: mc6845 reset
   data>>
-  [ 0 ] each
+  [ drop 0 ] map
 ;
 
 

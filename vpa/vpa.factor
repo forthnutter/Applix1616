@@ -4,7 +4,8 @@
 USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models
       prettyprint sequences freescale.68000.emulator byte-arrays
-      namespaces ascii words quotations arrays applix applix.riport ;
+      namespaces ascii words quotations arrays applix applix.riport
+      applix.vpa.mc6845 ;
 
 IN: applix.vpa
 
@@ -15,6 +16,14 @@ IN: applix.vpa
 ! $0070 0180 CRT Address Register
 
 TUPLE: vpa reset readmap writemap riport m6845 ;
+
+GENERIC: reset ( cpu -- ) ;
+
+! lets tell the ports to RESET
+M: vpa reset
+  drop ;
+
+
 
 ! SCC
 : (vparead-0) ( n address cpu -- array )
@@ -35,8 +44,7 @@ TUPLE: vpa reset readmap writemap riport m6845 ;
 
 ! CRT
 : (vparead-3) ( n address cpu -- array )
-  break
-  drop drop drop { 3 } ;
+  m6845>> read ;
 
 : (vparead-bad) ( n address cpu -- array )
   drop drop drop { 4 } ;

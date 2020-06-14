@@ -178,7 +178,7 @@ M: applix write-bytes
 
 
 : applix-reset ( cpu -- )
-    drop ;
+  [ vpa>> reset ] keep  drop ;
 
 ! display current registers
 : x ( applix -- applix' )

@@ -23,7 +23,7 @@ TUPLE: ram array error ;
     array>> subseq ;
 
 : ram-write ( seq address ram -- )
-  break [ dup length ] 2dip ! seq len address ram
+  [ dup length ] 2dip ! seq len address ram
   [ swap ] dip ! seq address len ram
   [ dup ] 2dip ! seq address address len ram
   [ + ] dip ! seq address aend ram

@@ -12,17 +12,21 @@ GENERIC: read ( n adrress mc6845 -- data )
 
 ! reset all registers a reset signal has happend
 M: mc6845 reset
+  0 >>address
   [ data>> ] keep swap
   [ drop 0 ] map data<<
 ;
 
 
 ! read will allways return 1 byte in an array
+! address bit 0 = 0 is data bit 0 = 1 is address register.
 M: mc6845 read
+  [ 0 bit? ] dip 
   ;
 
 
 ! Create the tuple
 : <mc6845> ( -- mc6845 )
   mc6845 new
+  0 >>address
   17 <array> >>data ;

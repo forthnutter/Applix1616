@@ -22,6 +22,10 @@ M: mc6845 reset
 M: mc6845 read-address
   address>> 1 <byte-array> ;
 
+M: mc6845 read-data
+[ address>> ] keep
+data>> nth ;
+
 
 ! read will allways return 1 byte in an array
 ! address bit 0 = 0 is data bit 0 = 1 is address register.

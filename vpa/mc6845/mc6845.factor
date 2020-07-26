@@ -11,6 +11,10 @@ GENERIC: reset ( mc6845 --  )
 GENERIC: read ( n adrress mc6845 -- data )
 GENERIC: read-address ( mc6845 -- address )
 GENERIC: read-data ( mc6845 -- data )
+GENERIC: write ( n address mc6845 -- )
+GENERIC: write-address ( data mc6845 -- )
+GENERIC: write-data ( data mc6845 -- )
+
 
 ! reset all registers a reset signal has happend
 M: mc6845 reset
@@ -22,9 +26,17 @@ M: mc6845 reset
 M: mc6845 read-address
   address>> 1 <byte-array> ;
 
+M: mc6845 write-address
+  address<< ;
+
 M: mc6845 read-data
 [ address>> ] keep
 data>> nth ;
+
+M: mc6845 write-data
+[ address>> ] keep
+data>> set-nth ;
+
 
 
 ! read will allways return 1 byte in an array
@@ -34,6 +46,11 @@ M: mc6845 read
   [ read-address  ]
   [ read-data ] if
   ;
+
+M: mc6845 write
+  [ 0 bit? ] dip swap
+  [ write-address ]
+  [ write-address ] if ;
 
 
 ! Create the tuple

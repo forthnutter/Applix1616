@@ -1,7 +1,7 @@
 ! this the MC6845 ctrc from Motora
 ! we are attempting to emulate this device.
 
-USING: kernel accessors sequences arrays ;
+USING: kernel accessors sequences arrays byte-arrays math ;
 
 IN: applix.vpa.mc6845
 
@@ -24,14 +24,14 @@ M: mc6845 reset
 ;
 
 M: mc6845 read-address
-  address>> 1 <byte-array> ;
+  address>> 1byte-array ;
 
 M: mc6845 write-address
   address<< ;
 
 M: mc6845 read-data
 [ address>> ] keep
-data>> nth ;
+data>> nth 1byte-array ;
 
 M: mc6845 write-data
 [ address>> ] keep
@@ -42,9 +42,10 @@ data>> set-nth ;
 ! read will allways return 1 byte in an array
 ! address bit 0 = 0 is data bit 0 = 1 is address register.
 M: mc6845 read
-  [ 0 bit? ] dip swap
-  [ read-address  ]
-  [ read-data ] if
+  [ drop ] 2dip   ! we don't use the n parameters
+  [ 0 bit? ] dip swap  ! test to see if bit 0 of the address
+  [ read-address ]   ! if addrees bit 0 is set just read address register
+  [ read-data ] if      ! if bit is clear read the data from data register
   ;
 
 M: mc6845 write

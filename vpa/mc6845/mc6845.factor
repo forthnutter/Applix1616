@@ -59,3 +59,12 @@ M: mc6845 write
   mc6845 new
   0 >>address
   17 <array> >>data ;
+
+
+TUPLE: m6845-gadget < gadget cpu quit? windowed? ;
+
+: <m6845-gadget> ( cpu -- gadget )
+  m6845-gadget new
+  swap >>cpu
+  f >>quit? ;
+  

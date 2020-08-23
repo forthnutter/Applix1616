@@ -63,8 +63,19 @@ M: mc6845 write
 
 TUPLE: m6845-gadget < gadget cpu quit? windowed? ;
 
+! create the gui stuff
 : <m6845-gadget> ( cpu -- gadget )
   m6845-gadget new
   swap >>cpu
   f >>quit? ;
+
+! diamensions of the display
+: m6845-gadget pre-dim* drop { 640 480 } ;
+
+! draw pixels to the screen
+: m6845-gadget draw-gadget*
+  0 0 glRasterPos2i
+  1.0 -1.0 glPixelZoom
+  [ 640 480 GL_RGB GL_UNSIGNED_BYTE ] dip
+  cpu>> bitmap>> glDrawPixels ;
   

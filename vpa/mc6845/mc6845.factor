@@ -78,4 +78,41 @@ TUPLE: m6845-gadget < gadget cpu quit? windowed? ;
   1.0 -1.0 glPixelZoom
   [ 640 480 GL_RGB GL_UNSIGNED_BYTE ] dip
   cpu>> bitmap>> glDrawPixels ;
-  
+
+CONSTANT: black {   0   0   0 }
+CONSTANT: white { 255 255 255 }
+CONSTANT: green {   0 255   0 }
+CONSTANT: red   { 255   0   0 }
+CONSTANT: blue  {   0   0 255 }
+
+
+: addr>xy ( addr -- point )
+  ! Convert video RAM address to base X Y value. point is a {x y}.
+  0x2400 - ! n
+  dup 0x1f bitand 8 * 255 swap - ! n y
+  swap -5 shift swap 2array ;
+
+: plot-bitmap-pixel ( bitmap point color -- )
+  ! point is a {x y}. color is a {r g b}.
+  set-bitmap-pixel ;
+
+: get-point-color ( point -- color )
+  ! Return the color to use for the given x/y position.
+  first2
+  {
+    { [ dup 184 238 between? pick 0 223 between? and ] [ 2drop green ] }
+    { [ dup 240 247 between? pick 16 133 between? and ] [ 2drop green ] }
+    { [ dup 247 215 - 247 184 - between? pick 0 223 between? and ] [ 2drop red ] }
+    [ 2drop white ]
+  } cond ;
+
+: plot-bitmap-bits ( bitmap point byte bit -- )
+  ! point is a {x y}.
+  [ first2 ] 2dip
+  dup swapd -1 * shift 1 bitand 0 =
+  [ - 2array ] dip
+  [ black ] [ dup get-point-color ] if
+  plot-bitmap-pixel ;
+
+: do-bitmap-update ( bitmap value addr -- )
+  addr>xy swap 8 <iota> [ plot-bitmap-bits ] with with with each ;

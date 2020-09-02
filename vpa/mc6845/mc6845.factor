@@ -61,19 +61,19 @@ M: mc6845 write
   17 <array> >>data ;
 
 
-TUPLE: m6845-gadget < gadget cpu quit? windowed? ;
+TUPLE: mc6845-gadget < gadget cpu quit? windowed? ;
 
 ! create the gui stuff
-: <m6845-gadget> ( cpu -- gadget )
-  m6845-gadget new
+: <mc6845-gadget> ( cpu -- gadget )
+  mc6845-gadget new
   swap >>cpu
   f >>quit? ;
 
 ! diamensions of the display
-: m6845-gadget pre-dim* drop { 640 480 } ;
+: mc6845-gadget pre-dim* drop { 640 480 } ;
 
 ! draw pixels to the screen
-: m6845-gadget draw-gadget*
+: mc6845-gadget draw-gadget*
   0 0 glRasterPos2i
   1.0 -1.0 glPixelZoom
   [ 640 480 GL_RGB GL_UNSIGNED_BYTE ] dip
@@ -116,3 +116,45 @@ CONSTANT: blue  {   0   0 255 }
 
 : do-bitmap-update ( bitmap value addr -- )
   addr>xy swap 8 <iota> [ plot-bitmap-bits ] with with with each ;
+
+
+M: mc6845 update-video
+  over 0x2400 >=
+  [
+      bitmap>> -rot do-bitmap-update
+  ]
+  [
+      3drop
+  ] if ;
+
+: sync-frame ( micros -- micros )
+  ! Sleep until the time for the next frame arrives.
+  16,667 + system:nano-count - dup 0 >
+  [ 1,000 * threads:sleep ] [ drop threads:yield ] if
+  system:nano-count ;
+
+: mc6845-process ( micros gadget -- )
+  ! Run a space invaders gadget inside a
+  ! concurrent process. Messages can be sent to
+  ! signal key presses, etc.
+  dup quit?>>
+  [
+    exit-openal 2drop
+  ]
+  [
+    [ sync-frame ] dip
+    {
+      [ cpu>> gui-frame ]
+      [ relayout-1 ]
+      [ invaders-process ]
+    } cleave
+  ] if ;
+
+M: mc6845-gadget graft*
+      dup cpu>> init-sounds
+      f >>quit?
+      [ system:nano-count swap invaders-process ] curry
+      "MC6845" threads:spawn drop ;
+
+M: mc6845-gadget ungraft*
+      t swap quit?<< ;

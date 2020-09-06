@@ -1,7 +1,7 @@
 ! this the MC6845 ctrc from Motora
 ! we are attempting to emulate this device.
 
-USING: kernel accessors sequences arrays byte-arrays math ;
+USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets ui.render ;
 
 IN: applix.vpa.mc6845
 
@@ -69,11 +69,19 @@ TUPLE: mc6845-gadget < gadget cpu quit? windowed? ;
   swap >>cpu
   f >>quit? ;
 
+:: set-bitmap-pixel ( bitmap point color -- )
+  point bitmap-index :> index
+  color first  index     bitmap set-nth
+  color second index 1 + bitmap set-nth
+  color third  index 2 + bitmap set-nth ;
+
+
+
 ! diamensions of the display
-: mc6845-gadget pre-dim* drop { 640 480 } ;
+M: mc6845-gadget pref-dim* drop { 640 480 } ;
 
 ! draw pixels to the screen
-: mc6845-gadget draw-gadget*
+M: mc6845-gadget draw-gadget*
   0 0 glRasterPos2i
   1.0 -1.0 glPixelZoom
   [ 640 480 GL_RGB GL_UNSIGNED_BYTE ] dip

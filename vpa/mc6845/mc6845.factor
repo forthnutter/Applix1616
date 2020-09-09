@@ -1,7 +1,8 @@
 ! this the MC6845 ctrc from Motora
 ! we are attempting to emulate this device.
 
-USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets ui.render ;
+USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets
+  ui.render locals math.order combinators ;
 
 IN: applix.vpa.mc6845
 
@@ -63,11 +64,18 @@ M: mc6845 write
 
 TUPLE: mc6845-gadget < gadget cpu quit? windowed? ;
 
+CONSTANT: screen-width 640
+CONSTANT: screen-height 480
+
 ! create the gui stuff
 : <mc6845-gadget> ( cpu -- gadget )
   mc6845-gadget new
   swap >>cpu
   f >>quit? ;
+
+: bitmap-index ( point -- index )
+  ! Point is a {x y}.
+  first2 screen-width 3 * * swap 3 * + ;
 
 :: set-bitmap-pixel ( bitmap point color -- )
   point bitmap-index :> index

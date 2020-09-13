@@ -2,7 +2,7 @@
 ! we are attempting to emulate this device.
 
 USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets
-  ui.render locals math.order combinators ;
+  ui.render locals math.order combinators system threads ;
 
 IN: applix.vpa.mc6845
 
@@ -15,7 +15,7 @@ GENERIC: read-data ( mc6845 -- data )
 GENERIC: write ( n address mc6845 -- )
 GENERIC: write-address ( data mc6845 -- )
 GENERIC: write-data ( data mc6845 -- )
-
+GENERIC: update-video ( mc6845 -- )
 
 ! reset all registers a reset signal has happend
 M: mc6845 reset
@@ -143,6 +143,31 @@ M: mc6845 update-video
       3drop
   ] if ;
 
+: gui-step ( cpu -- )
+      [ read-instruction ] keep ! n cpu
+      over get-cycles over inc-cycles
+      [ swap instructions nth call( cpu -- ) ] keep
+      [ pc>> 0xFFFF bitand ] keep
+      pc<< ;
+
+: gui-frame/2 ( cpu -- )
+  [ gui-step ] keep
+      [ cycles>> ] keep
+      over 16667 < [ ! cycles cpu
+          nip gui-frame/2
+      ] [
+          [ [ 16667 - ] dip cycles<< ] keep
+          dup last-interrupt>> 0x10 = [
+              0x08 >>last-interrupt 0x08 swap interrupt
+          ] [
+              0x10 >>last-interrupt 0x10 swap interrupt
+          ] if
+      ] if ;
+
+: gui-frame ( cpu -- )
+      dup gui-frame/2 gui-frame/2 ;
+
+
 : sync-frame ( micros -- micros )
   ! Sleep until the time for the next frame arrives.
   16,667 + system:nano-count - dup 0 >
@@ -155,14 +180,14 @@ M: mc6845 update-video
   ! signal key presses, etc.
   dup quit?>>
   [
-    exit-openal 2drop
+    2drop
   ]
   [
     [ sync-frame ] dip
     {
       [ cpu>> gui-frame ]
       [ relayout-1 ]
-      [ invaders-process ]
+      [ mc6845-process ]
     } cleave
   ] if ;
 

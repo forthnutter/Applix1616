@@ -2,7 +2,7 @@
 ! we are attempting to emulate this device.
 
 USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets
-  ui.render locals math.order combinators system threads ;
+  ui.render locals math.order combinators system threads freescale.68000 ;
 
 IN: applix.vpa.mc6845
 
@@ -144,24 +144,27 @@ M: mc6845 update-video
   ] if ;
 
 : gui-step ( cpu -- )
-      [ read-instruction ] keep ! n cpu
-      over get-cycles over inc-cycles
-      [ swap instructions nth call( cpu -- ) ] keep
-      [ pc>> 0xFFFF bitand ] keep
-      pc<< ;
+      [ single-step ] keep ! n cpu
+      drop ;
 
 : gui-frame/2 ( cpu -- )
   [ gui-step ] keep
       [ cycles>> ] keep
-      over 16667 < [ ! cycles cpu
+      over 16667 <
+      [ ! cycles cpu
           nip gui-frame/2
-      ] [
-          [ [ 16667 - ] dip cycles<< ] keep
-          dup last-interrupt>> 0x10 = [
-              0x08 >>last-interrupt 0x08 swap interrupt
-          ] [
-              0x10 >>last-interrupt 0x10 swap interrupt
-          ] if
+      ]
+      [
+          [
+            [ 16667 - ] dip cycles<<
+          ] keep
+!          dup last-interrupt>> 0x10 =
+!          [
+!              0x08 >>last-interrupt 0x08 swap interrupt
+!          ]
+!          [
+!              0x10 >>last-interrupt 0x10 swap interrupt
+!          ] if
       ] if ;
 
 : gui-frame ( cpu -- )
@@ -192,9 +195,9 @@ M: mc6845 update-video
   ] if ;
 
 M: mc6845-gadget graft*
-      dup cpu>> init-sounds
+!      dup cpu>> init-sounds
       f >>quit?
-      [ system:nano-count swap invaders-process ] curry
+      [ system:nano-count swap mc6845-process ] curry
       "MC6845" threads:spawn drop ;
 
 M: mc6845-gadget ungraft*

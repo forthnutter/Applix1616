@@ -8,7 +8,6 @@ IN: applix.vpa.mc6845
 
 TUPLE: mc6845 address data ;
 
-GENERIC: reset ( mc6845 --  )
 GENERIC: read ( n adrress mc6845 -- data )
 GENERIC: read-address ( mc6845 -- address )
 GENERIC: read-data ( mc6845 -- data )
@@ -17,7 +16,8 @@ GENERIC: write-address ( data mc6845 -- )
 GENERIC: write-data ( data mc6845 -- )
 GENERIC: update-video ( mc6845 -- )
 
-! reset all registers a reset signal has happend
+! the reset pin is not used on applix
+! all registers a reset signal has happend
 M: mc6845 reset
   0 >>address
   [ data>> ] keep swap

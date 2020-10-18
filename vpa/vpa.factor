@@ -15,9 +15,9 @@ IN: applix.vpa
 ! $0070 0100 VIA Base
 ! $0070 0180 CRT Address Register
 
-TUPLE: vpa reset readmap writemap riport m6845 ;
+TUPLE: vpa readmap writemap riport m6845 ;
 
-GENERIC: reset ( cpu -- ) 
+GENERIC: reset ( cpu -- )
 
 ! lets tell the ports to RESET
 M: vpa reset

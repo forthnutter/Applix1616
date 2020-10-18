@@ -8,6 +8,7 @@ IN: applix.vpa.mc6845
 
 TUPLE: mc6845 address data ;
 
+GENERIC: reset ( mc6845 -- )
 GENERIC: read ( n adrress mc6845 -- data )
 GENERIC: read-address ( mc6845 -- address )
 GENERIC: read-data ( mc6845 -- data )
@@ -59,7 +60,7 @@ M: mc6845 write
 : <mc6845> ( -- mc6845 )
   mc6845 new
   0 >>address
-  17 <array> >>data ;
+  17 0 <array> >>data ;
 
 
 TUPLE: mc6845-gadget < gadget cpu quit? windowed? ;

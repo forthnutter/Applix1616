@@ -136,13 +136,12 @@ CONSTANT: blue  {   0   0 255 }
 
 
 M: mc6845 update-video
-  over 0x2400 >=
-  [
-      bitmap>> -rot do-bitmap-update
-  ]
-  [
-      3drop
-  ] if ;
+  [ bitmap>> ] keep
+  [ 0 ] dip
+  [ 0 ] dip
+  drop do-bitmap-update ;
+
+
 
 : gui-step ( cpu -- )
       [ single-step ] keep ! n cpu

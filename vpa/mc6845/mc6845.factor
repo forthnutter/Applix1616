@@ -148,16 +148,17 @@ M: mc6845 update-video
       drop ;
 
 : gui-frame/2 ( cpu -- )
-  [ gui-step ] keep
-      [ cycles>> ] keep
-      over 16667 <
-      [ ! cycles cpu
-          nip gui-frame/2
-      ]
-      [
-          [
-            [ 16667 - ] dip cycles<<
-          ] keep
+  drop
+!  [ gui-step ] keep
+!      [ cycles>> ] keep over 16667 <
+!      [ ! cycles cpu
+!          nip gui-frame/2
+!      ]
+!      [
+!        drop
+          ! [
+            ! [ 16667 - ] dip cycles<<
+          ! ] keep
 !          dup last-interrupt>> 0x10 =
 !          [
 !              0x08 >>last-interrupt 0x08 swap interrupt
@@ -165,7 +166,8 @@ M: mc6845 update-video
 !          [
 !              0x10 >>last-interrupt 0x10 swap interrupt
 !          ] if
-      ] if ;
+!      ] if
+ ;
 
 : gui-frame ( cpu -- )
       dup gui-frame/2 gui-frame/2 ;

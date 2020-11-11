@@ -10,8 +10,9 @@ TUPLE: chrono < model rising falling ;
 
 <chrono> ( -- chrono )
   f chrono new-model
-  0 >> rising
-  0 >> falling ;
+  f model new-model >> rising
+  f model new-model >> falling
+  ;
 
 ! chrono value is set low and infrom the others
 M: low (  chrono -- )

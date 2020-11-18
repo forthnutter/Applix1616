@@ -7,6 +7,11 @@ IN: applix.chrono
 
 TUPLE: chrono < model rising falling ;
 
+GENERIC: low ( chrono -- )
+
+! chrono value is set low and infrom the others
+M: chrono low (  chrono -- )
+  f swap ?set-model ;
 
 : <chrono> ( -- chrono )
   f chrono new-model
@@ -16,9 +21,7 @@ TUPLE: chrono < model rising falling ;
   [ dup falling>> swap add-connection ] keep
   ;
 
-! chrono value is set low and infrom the others
-M: chrono low (  chrono -- )
-  f swap ?set-model ;
+
 
 ! chrono value is set high and informa others
 M: chrono high ( chrono -- )

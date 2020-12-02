@@ -1,7 +1,7 @@
 ! Chrono is system clock for emulation
 !
 
-USING: models accessors kernel models ;
+USING: models accessors kernel ;
 
 IN: applix.chrono
 
@@ -21,10 +21,10 @@ M: chrono low (  chrono -- )
 M: chrono high ( chrono -- )
   t swap ?set-model ;
 
-M: chrono toggle-rising ( madel -- )
+M: model toggle-rising ( madel -- )
   rising>> [ not ] change-model ;
 
-M: chrono toggle-falling ( model -- )
+M: model toggle-falling ( model -- )
   falling>> [ not ] change-model ;
 
 M: chrono model-changed
@@ -41,6 +41,7 @@ M: chrono model-changed
   f chrono new-model
   f model new-model >>rising
   f model new-model >>falling
-  [ dup rising>> swap add-connection ] keep
-  [ dup falling>> swap add-connection ] keep
+  [ dup add-connection ] keep
+!  [ dup rising>> swap add-connection ] keep
+!  [ dup falling>> swap add-connection ] keep
   ;

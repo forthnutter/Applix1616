@@ -22,10 +22,10 @@ M: chrono high ( chrono -- )
   t swap ?set-model ;
 
 M: model toggle-rising ( madel -- )
-  value>> [ not ] change-model ;
+  [ value>> not ] keep ?set-model ;
 
 M: model toggle-falling ( model -- )
-  value>> [ not ] change-model ;
+  [ value>> not ] keep ?set-model ;
 
 M: chrono model-changed
   break

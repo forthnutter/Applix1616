@@ -32,7 +32,7 @@ M: chrono model-changed
   [ value>> ] keep [ rising>> value>> xor ] keep swap
   [
     [ rising>> toggle-rising ] keep
-  ] unless
+  ] unless drop
   [ value>> ] keep [ falling>> value>> xor ] keep swap
   [
     [ falling>> toggle-falling ] keep

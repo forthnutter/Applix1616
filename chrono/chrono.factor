@@ -41,7 +41,7 @@ M: chrono model-changed
 : <chrono> ( -- chrono )
   f chrono new-model
   f model new-model >>rising
-  f model new-model >>falling
+  t model new-model >>falling
   [ dup add-connection ] keep
 !  [ dup rising>> swap add-connection ] keep
 !  [ dup falling>> swap add-connection ] keep

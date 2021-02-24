@@ -29,17 +29,19 @@ M: model toggle-falling ( model -- )
 
 M: chrono model-changed
   break
-  [ value>> ] keep [ rising>> value>> xor ] keep swap
+
+  [ value>> ] keep swap
   [
-    [ rising>> toggle-rising ] keep
-  ] unless drop
-  [ value>> ] keep [ falling>> value>> xor ] keep swap
+    [ t swap rising>> ?set-model ] keep
+    f swap falling>> ?set-model
+  ]
   [
-    [ falling>> toggle-falling ] keep
-  ] unless drop ;
+    [ f swap rising>> ?set-model ] keep
+    t swap falling>> ?set-model
+  ] if drop ;
 
 : <chrono> ( -- chrono )
-  f chrono new-model
+  t chrono new-model
   f model new-model >>rising
   t model new-model >>falling
   [ dup add-connection ] keep

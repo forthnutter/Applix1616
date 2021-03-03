@@ -40,6 +40,9 @@ M: chrono model-changed
     t swap falling>> ?set-model
   ] if drop ;
 
+: toggle-chrono ( chrono -- )
+  [ not ] change-model ;
+
 : <chrono> ( -- chrono )
   t chrono new-model
   f model new-model >>rising

@@ -7,13 +7,13 @@ USING: accessors kernel math math.bitwise math.order math.parser
       sequences freescale.68000.emulator byte-arrays
       applix.ioport applix.ram applix.rom namespaces
       io freescale.68000 freescale.68000.disassembler combinators
-      ascii words quotations arrays applix.vpa ;
+      ascii words quotations arrays applix.vpa applix.reset ;
 
 IN: applix
 
 ! TUPLE: applix < cpu rom ram readmap writemap boot vpa ioport ;
 
-TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport ;
+TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport rst ;
 
 : mem-bad ( -- )
   ;
@@ -174,11 +174,12 @@ M: applix write-bytes
     1024 <byte-array>    ! this the ram
     <ram> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
-    <ioport> >>ioport ;
+    <ioport> >>ioport 
+    <reset> >>rst ;
 
 
 : applix-reset ( cpu -- )
-  [ vpa>> reset ] keep  drop ;
+  [ rst>> reset-toggle ] keep  drop ;
 
 ! display current registers
 : x ( applix -- applix' )

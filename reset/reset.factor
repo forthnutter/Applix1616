@@ -4,7 +4,7 @@
 
 
 
-USING: models ;
+USING: kernel models ;
 
 
 
@@ -12,10 +12,12 @@ IN: applix.reset
 
 TUPLE: reset < model ;
 
+: reset-toggle ( reset -- )
+    [ not ] change-model ;
 
 
-: reset-add ( reset - )
-
+: reset-add ( observer reset -- )
+    add-connection
 ;
 
 

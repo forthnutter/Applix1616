@@ -5,7 +5,7 @@ USING: accessors kernel math math.bitwise math.order math.parser
       freescale.binfile tools.continuations models
       prettyprint sequences freescale.68000.emulator byte-arrays
       namespaces ascii words quotations arrays applix applix.riport
-      applix.vpa.mc6845 ;
+      applix.vpa.mc6845 applix.reset ;
 
 IN: applix.vpa
 

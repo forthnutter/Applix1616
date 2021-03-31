@@ -22,6 +22,6 @@ TUPLE: reset < model ;
 
 
 : <reset> ( -- reset )
-    new-model
+    f reset new-model
 
 ;

@@ -14,6 +14,12 @@ IN: applix
 ! TUPLE: applix < cpu rom ram readmap writemap boot vpa ioport ;
 
 TUPLE: applix < M68000 rom ram readmap writemap boot vpa ioport rst ;
+ 
+GENERIC: boot-flag ( applix -- )
+
+
+M: reset boot-flag
+  t >>boot ;
 
 : mem-bad ( -- )
   ;
@@ -175,10 +181,11 @@ M: applix write-bytes
     <ram> >>ram  ! add some ram
     <vpa> >>vpa ! vpa decoder
     <ioport> >>ioport 
-    <reset> >>rst ;
+    <reset> >>rst 
+    [ boot>> ] keep [ rst>> ] keep [ reset-add ] dip ;
 
 
-: applix-reset ( cpu -- )
+: applix-reset ( applix -- )
   [ rst>> reset-toggle ] keep  drop ;
 
 ! display current registers

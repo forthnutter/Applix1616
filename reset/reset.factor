@@ -12,6 +12,7 @@ IN: applix.reset
 
 TUPLE: reset < model ;
 
+
 : reset-toggle ( reset -- )
     [ not ] change-model ;
 

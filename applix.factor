@@ -19,7 +19,7 @@ GENERIC: boot-flag ( applix -- )
 
 
 M: reset boot-flag
-  t >>boot ;
+  t >>boot drop ;
 
 : mem-bad ( -- )
   ;

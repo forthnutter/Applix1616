@@ -2,13 +2,13 @@
 ! we are attempting to emulate this device.
 
 USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets
-  ui.render locals math.order combinators system threads freescale.68000 ;
+  ui.render locals math.order combinators system threads freescale.68000 applix.reset ;
 
 IN: applix.vpa.mc6845
 
 TUPLE: mc6845 address data ;
 
-GENERIC: reset ( mc6845 -- )
+GENERIC: mc6845 ( mc6845 -- )
 GENERIC: read ( n adrress mc6845 -- data )
 GENERIC: read-address ( mc6845 -- address )
 GENERIC: read-data ( mc6845 -- data )
@@ -19,7 +19,7 @@ GENERIC: update-video ( mc6845 -- )
 
 ! the reset pin is not used on applix
 ! all registers a reset signal has happend
-M: mc6845 reset
+M: reset mc6845
   0 >>address
   [ data>> ] keep swap
   [ drop 0 ] map data<<

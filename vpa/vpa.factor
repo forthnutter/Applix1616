@@ -17,11 +17,11 @@ IN: applix.vpa
 
 TUPLE: vpa readmap writemap riport m6845 ;
 
-GENERIC: vpa ( applix -- )
+GENERIC: vpa-reset ( applix -- )
 
 
 ! lets tell the ports to RESET
-M: reset vpa
+M: reset vpa-reset
   drop ;
 
 

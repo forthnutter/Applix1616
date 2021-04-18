@@ -183,7 +183,7 @@ M: applix write-bytes
     <vpa> >>vpa ! vpa decoder
     <ioport> >>ioport 
     <reset> >>rst 
-    [ boot>> ] keep [ rst>> ] keep [ reset-add ] dip ;
+    \ boot-flag swap [ rst>> ] keep [ reset-add ] dip ;
 
 
 : applix-reset ( applix -- )

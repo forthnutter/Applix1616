@@ -1,8 +1,9 @@
 ! this the MC6845 ctrc from Motora
 ! we are attempting to emulate this device.
 
-USING: kernel accessors sequences arrays byte-arrays math opengl.gl ui ui.gadgets
-  ui.render locals math.order combinators system threads freescale.68000 applix.reset ;
+USING: kernel accessors sequences arrays byte-arrays tools.continuations math opengl.gl ui ui.gadgets
+  ui.render locals math.order combinators system threads freescale.68000 applix.reset 
+  ;
 
 IN: applix.vpa.mc6845
 
@@ -58,6 +59,7 @@ M: mc6845 write
 
 ! Create the tuple
 : <mc6845> ( -- mc6845 )
+  break
   mc6845 new
   0 >>address
   17 0 <array> >>data ;

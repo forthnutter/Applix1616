@@ -15,7 +15,7 @@ IN: applix.vpa
 ! $0070 0100 VIA Base
 ! $0070 0180 CRT Address Register
 
-TUPLE: vpa readmap writemap riport m6845 ;
+TUPLE: vpa readmap writemap riport crtc ;
 
 GENERIC: vpa-reset ( applix -- )
 
@@ -109,9 +109,11 @@ M: reset vpa-reset
   drop drop drop ;
 
 : <vpa> ( -- vpa )
+  break
   vpa new
   4 [ (vparead-bad) ] <array> >>readmap
   [ vpa-readmap ] keep swap >>readmap
   4 [ (vpawrite-bad) ] <array> >>writemap
   [ vpa-writemap ] keep swap >>writemap
-  <riport> >>riport ;
+  <riport> >>riport 
+  <mc6845> >>crtc ;

@@ -45,7 +45,7 @@ M: reset vpa-reset
 
 ! CRT
 : (vparead-3) ( n address cpu -- array )
-  m6845>> read ;
+  crtc>> mc6845-read ;
 
 : (vparead-bad) ( n address cpu -- array )
   drop drop drop { 4 } ;

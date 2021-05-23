@@ -7,7 +7,7 @@ USING: kernel accessors sequences arrays byte-arrays tools.continuations math op
 
 IN: applix.vpa.mc6845
 
-TUPLE: mc6845 address data ;
+TUPLE: mc6845 < gadget quit? windowed? address data ;
 
 
 GENERIC: read-address ( mc6845 -- address )

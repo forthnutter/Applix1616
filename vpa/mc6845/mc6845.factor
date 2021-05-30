@@ -53,12 +53,16 @@ GENERIC: update-video ( mc6845 -- )
 !  [ write-address ] if ;
 ;
 
+! diamensions of the display
+M: mc6845 pref-dim* drop { 640 480 } ;
+
 ! Create the tuple
 : <mc6845> ( -- mc6845 )
   break
   mc6845 new
   0 >>address
-  17 0 <array> >>data ;
+  17 0 <array> >>data 
+  ;
 
 
 TUPLE: mc6845-gadget < gadget cpu quit? windowed? ;
